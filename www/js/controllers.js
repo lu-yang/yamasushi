@@ -69,10 +69,24 @@ angular.module('starter.controllers', [ 'ngResource' ])
 .controller(
 		'OrderCtrl',
 		function($scope, $http) {
+
+			var init = function() {
+				GET.url = baseUrl + 'constant';
+				$http(GET).success(function(data) {
+					CONSTANT = data.model;
+				}).error(function(data) {
+					alert(data);
+				});
+			};
+
+			if (CONSTANT != null) {
+				init();
+			}
+
 			$scope.pnum = "";
+			$scope.orders = [];
 
 			$scope.clickKey = function($event, i) {
-				alert(i);
 				if (i == 10) {
 					$scope.pnum = $scope.pnum.length == 0 ? '' : $scope.pnum
 							.substring(0, $scope.pnum.length - 1);
@@ -85,13 +99,37 @@ angular.module('starter.controllers', [ 'ngResource' ])
 
 			};
 
+			$scope.clickCount = function($event, id, increment) {
+				alert($event);
+				var isNew = true;
+				var size = $scope.orders.length;
+				var count = 0;
+				for (var i = 0; i < size; i++) {
+					if ($scope.orders[i].id == id) {
+						$scope.orders[i].count += increment;
+						count = $scope.orders[i].count;
+						isNew = false;
+						break;
+					}
+				}
+				if (isNew) {
+					count = increment == 1 ? 1 : 0;
+					$scope.orders[size] = {
+						id : id,
+						count : count
+					}
+				}
+				document.getElementById('count' + id).innerHTML = "" + count;
+
+			}
+
 			var queryProducts = function(num) {
+				// TODO query by product num, controller of server need to add
 				if (!num) {
 					num = 11;
 				}
-				GET.url = baseUrl + 'products/' + locale + '/' + num
+				GET.url = baseUrl + 'products/' + locale + '/' + num;
 				$http(GET).success(function(data) {
-					alert("dddd  " + data);
 					$scope.products = data.list;
 				}).error(function(data) {
 					alert(data);
@@ -99,4 +137,44 @@ angular.module('starter.controllers', [ 'ngResource' ])
 			};
 
 			queryProducts($scope.pnum);
+		})
+
+.controller('OrderListCtrl', function($scope, $http) {
+	$scope.tableNo = 0;
+	$scope.maxTableNo = 0;
+	$scope.orders = null;
+	$scope.tables = null;
+
+	$scope.changeTableNo = function() {
+		var tables = $scope.tables;
+		var turnoverId = 0;
+		for (var i = 0; i < tables.length; i++) {
+			if (tables[i].id == $scope.tableNo) {
+				turnoverId = tables[i].turnover.id;
+				break;
+			}
+		}
+		GET.url = baseUrl + 'orders/' + locale + '/' + turnoverId;
+		$http(GET).success(function(data) {
+			$scope.orders = data.list;
+		}).error(function(data) {
+			alert(data);
 		});
+
+	};
+
+	var queryTables = function() {
+
+		GET.url = baseUrl + 'availableTables';
+		$http(GET).success(function(data) {
+			$scope.tables = data.list;
+			$scope.maxTableNo = $scope.tables.length;
+
+			alert($scope.maxTableNo);
+		}).error(function(data) {
+			alert(data);
+		});
+	};
+
+	queryTables();
+});

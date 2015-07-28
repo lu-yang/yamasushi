@@ -8,14 +8,16 @@
 </div>
 <div class="list">
 
-	<div ng-repeat="item in products" class="item item-thumbnail-left" >
+	<div ng-repeat="item in products" class="item item-thumbnail-left">
 
 		<img ng-src="{{ item.thumb }}">
-		<h2>{{ item.productName }}</h2>
-		<h4>{{ item.productPrice }}</h4>
-		<button class="button button-small button-assertive">+</button>
-		<label class="item item-input">0</label>
-		<button class="button button-small button-assertive">-</button>
+		<h2>Name: {{ item.productName }}</h2>
+		<h4>Price: {{ item.productPrice }}</h4>
+		<button class="button button-small button-assertive"
+			ng-click="clickCount($event, {{item.id}}, 1)">+</button>
+		<label class="item item-input" id="count{{item.id}}">0</label>
+		<button class="button button-small button-assertive"
+			ng-click="clickCount($event, {{item.id}}, -1)">-</button>
 	</div>
 
 </div>

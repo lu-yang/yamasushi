@@ -35,11 +35,12 @@ var baseUrl = 'http://localhost:8080/sushibuffet/';
 var authorization = 'YWRtaW46cGFzMndvcmQ=';
 var locale = 'fr';
 
+var CONSTANT=null;
+
 var REQ = {
 	headers : {
 		'Content-Type' : 'application/json',
-		'Authorization' : 'Basic ' + authorization,
-		'Access-Control-Allow-Origin' : '*'
+		'Authorization' : 'Basic ' + authorization
 	}
 };
 var GET = {
