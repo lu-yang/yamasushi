@@ -208,7 +208,6 @@ angular.module('starter.controllers', [ 'ngResource' ])
 		}).error(function(data) {
 			alert(data);
 		});
-
 	};
 
 	var queryTables = function() {
