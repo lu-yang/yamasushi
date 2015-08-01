@@ -31,11 +31,12 @@ ProductService.factory('Product', [ '$resource', function($resource) {
 	});
 } ]);
 
-var baseUrl = 'http://localhost:8080/sushibuffet/';
+var baseUrl = '';
+var defaultThumb = '';
+var categoryRootUr = '';
+var productRootUrl = '';
 var authorization = 'YWRtaW46cGFzMndvcmQ=';
 var locale = 'fr';
-
-var CONSTANT=null;
 
 var REQ = {
 	headers : {
@@ -51,3 +52,26 @@ var POST = {
 	method : 'POST'
 };
 angular.extend(POST, REQ);
+
+function convertImageURL(thumb) {
+	thumb = thumb ? thumb : defaultThumb;
+	return productRootUrl + thumb;
+}
+
+// angular.module('betalife.services', []).factory('$localStorage',
+// [ '$window', function($window) {
+// return {
+// set : function(key, value) {
+// $window.localStorage[key] = value;
+// },
+// get : function(key, defaultValue) {
+// return $window.localStorage[key] || defaultValue;
+// },
+// setObject : function(key, value) {
+// $window.localStorage[key] = JSON.stringify(value);
+// },
+// getObject : function(key) {
+// return JSON.parse($window.localStorage[key] || '{}');
+// }
+// }
+// } ]);

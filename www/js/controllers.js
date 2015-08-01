@@ -1,6 +1,11 @@
 angular.module('starter.controllers', [ 'ngResource' ])
 
-.controller('AppCtrl', function($scope, $ionicModal, $timeout) {
+.controller('AppCtrl', function($scope, $ionicModal, $timeout, $localStorage) {
+
+	baseUrl = $localStorage.get('server_address');
+	defaultThumb = $localStorage.get('defaultThumb');
+	categoryRootUr = $localStorage.get('categoryRootUr');
+	productRootUrl = $localStorage.get('productRootUrl');
 
 	// With the new view caching in Ionic, Controllers are only called
 	// when they are recreated or on app start, instead of every page change.
@@ -10,35 +15,35 @@ angular.module('starter.controllers', [ 'ngResource' ])
 	// });
 
 	// Form data for the login modal
-	$scope.loginData = {};
-
-	// Create the login modal that we will use later
-	$ionicModal.fromTemplateUrl('templates/login.html', {
-		scope : $scope
-	}).then(function(modal) {
-		$scope.modal = modal;
-	});
-
-	// Triggered in the login modal to close it
-	$scope.closeLogin = function() {
-		$scope.modal.hide();
-	};
-
-	// Open the login modal
-	$scope.login = function() {
-		$scope.modal.show();
-	};
-
-	// Perform the login action when the user submits the login form
-	$scope.doLogin = function() {
-		console.log('Doing login', $scope.loginData);
-
-		// Simulate a login delay. Remove this and replace with your login
-		// code if using a login system
-		$timeout(function() {
-			$scope.closeLogin();
-		}, 1000);
-	};
+	// $scope.loginData = {};
+	//
+	// // Create the login modal that we will use later
+	// $ionicModal.fromTemplateUrl('templates/login.html', {
+	// scope : $scope
+	// }).then(function(modal) {
+	// $scope.modal = modal;
+	// });
+	//
+	// // Triggered in the login modal to close it
+	// $scope.closeLogin = function() {
+	// $scope.modal.hide();
+	// };
+	//
+	// // Open the login modal
+	// $scope.login = function() {
+	// $scope.modal.show();
+	// };
+	//
+	// // Perform the login action when the user submits the login form
+	// $scope.doLogin = function() {
+	// console.log('Doing login', $scope.loginData);
+	//
+	// // Simulate a login delay. Remove this and replace with your login
+	// // code if using a login system
+	// $timeout(function() {
+	// $scope.closeLogin();
+	// }, 1000);
+	// };
 })
 
 .controller('PlaylistsCtrl', function($scope) {
@@ -63,28 +68,45 @@ angular.module('starter.controllers', [ 'ngResource' ])
 	} ];
 })
 
-.controller('PlaylistCtrl', function($scope, $stateParams) {
+.controller('ConfigCtrl', function($scope, $stateParams, $localStorage, $http) {
+	$scope.serverAddress = baseUrl;
+	$scope.saveServerAddress = function(servAdd) {
+		$localStorage.set('server_address', servAdd);
+		baseUrl = servAdd;
+		init();
+	};
+
+	var init = function() {
+		GET.url = baseUrl + 'constant';
+		$http(GET).success(function(data) {
+			defaultThumb = data.model.defaultThumb;
+			$localStorage.set('defaultThumb', data.model.defaultThumb);
+			categoryRootUr = data.model.categoryRootUr;
+			$localStorage.set('categoryRootUr', data.model.categoryRootUr);
+			productRootUrl = data.model.productRootUrl;
+			$localStorage.set('productRootUrl', data.model.productRootUrl);
+			alert("保存成功");
+		}).error(function(data) {
+			alert("保存失败");
+		});
+	};
+
+	$scope.refresh = init;
 })
 
 .controller(
 		'OrderCtrl',
-		function($scope, $http) {
-
-			var init = function() {
-				GET.url = baseUrl + 'constant';
-				$http(GET).success(function(data) {
-					CONSTANT = data.model;
-				}).error(function(data) {
-					alert(data);
-				});
-			};
-
-			if (CONSTANT != null) {
-				init();
-			}
+		function($scope, $http, $ionicModal) {
 
 			$scope.pnum = "";
 			$scope.orders = [];
+
+			$ionicModal.fromTemplateUrl('templates/done.html', {
+				scope : $scope,
+				animation : 'slide-in-up'
+			}).then(function(modal) {
+				$scope.modal = modal;
+			});
 
 			$scope.clickKey = function($event, i) {
 				if (i == 10) {
@@ -99,8 +121,11 @@ angular.module('starter.controllers', [ 'ngResource' ])
 
 			};
 
+			$scope.clickDone = function() {
+				$scope.modal.show();
+			};
+
 			$scope.clickCount = function($event, id, increment) {
-				alert($event);
 				var isNew = true;
 				var size = $scope.orders.length;
 				var count = 0;
@@ -130,7 +155,13 @@ angular.module('starter.controllers', [ 'ngResource' ])
 				}
 				GET.url = baseUrl + 'products/' + locale + '/' + num;
 				$http(GET).success(function(data) {
-					$scope.products = data.list;
+					var list = data.list;
+					for (var i = 0; i < list.length; ++i) {
+						var thumb = list[i].thumb;
+						list[i].thumb = convertImageURL(thumb);
+					}
+					$scope.products = list;
+
 				}).error(function(data) {
 					alert(data);
 				});
@@ -140,23 +171,40 @@ angular.module('starter.controllers', [ 'ngResource' ])
 		})
 
 .controller('OrderListCtrl', function($scope, $http) {
-	$scope.tableNo = 0;
-	$scope.maxTableNo = 0;
+
+	// $scope.maxTableNo = 0;
 	$scope.orders = null;
 	$scope.tables = null;
 
-	$scope.changeTableNo = function() {
+	$scope.changeTableNo = function(tno) {
 		var tables = $scope.tables;
-		var turnoverId = 0;
+		var turnoverId = null;
 		for (var i = 0; i < tables.length; i++) {
-			if (tables[i].id == $scope.tableNo) {
-				turnoverId = tables[i].turnover.id;
+			if (tables[i].id == tno) {
+				if (tables[i].turnover) {
+					turnoverId = tables[i].turnover.id;
+				}
 				break;
 			}
 		}
+		if (!turnoverId) {
+			alert("此桌没有客人");
+			$scope.orders = null;
+			return;
+		}
 		GET.url = baseUrl + 'orders/' + locale + '/' + turnoverId;
 		$http(GET).success(function(data) {
-			$scope.orders = data.list;
+			if (!data.list || data.list.length == 0) {
+				alert("此桌还没有点单。");
+				$scope.orders = null;
+				return;
+			}
+			var list = data.list;
+			for (var i = 0; i < list.length; ++i) {
+				var thumb = list[i].product.thumb;
+				list[i].product.thumb = convertImageURL(thumb);
+			}
+			$scope.orders = list;
 		}).error(function(data) {
 			alert(data);
 		});
@@ -169,8 +217,7 @@ angular.module('starter.controllers', [ 'ngResource' ])
 		$http(GET).success(function(data) {
 			$scope.tables = data.list;
 			$scope.maxTableNo = $scope.tables.length;
-
-			alert($scope.maxTableNo);
+			$scope.tableNo = 0;
 		}).error(function(data) {
 			alert(data);
 		});
