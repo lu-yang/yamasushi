@@ -212,7 +212,6 @@ angular.module('starter.controllers', [ 'ngResource' ])
 	};
 
 	var queryTables = function() {
-
 		GET.url = baseUrl + 'availableTables';
 		$http(GET).success(function(data) {
 			$scope.tables = data.list;
