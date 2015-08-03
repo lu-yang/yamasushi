@@ -85,6 +85,11 @@ angular.module('starter.controllers', [ 'ngResource' ])
 			}).then(function(modal) {
 				$scope.modal = modal;
 			});
+			$scope.$on('modal.hidden', function() {
+				alert("hidden");
+				$scope.pnum = null;
+				queryProducts($scope.pnum);
+			});
 
 			$scope.clickKey = function($event, i) {
 				if (i == 10) {
@@ -96,12 +101,49 @@ angular.module('starter.controllers', [ 'ngResource' ])
 					$scope.pnum += i;
 				}
 				queryProducts($scope.pnum);
-
 			};
 
 			$scope.clickDone = function() {
+				var queryTables = function() {
+					GET.url = baseUrl + 'availableTables';
+					$http(GET).success(function(data) {
+						$scope.rangeTableModel = {
+							tables : data.list,
+							maxTableNo : data.list.length,
+							tableNo : 0
+						}
+					}).error(function(data) {
+						alert(data);
+					});
+				};
+
+				queryTables();
 				$scope.modal.show();
 			};
+
+			$scope.changeTableNo = function(tno) {
+				var tables = $scope.rangeTableModel.tables;
+				for (var i = 0; i < tables.length; i++) {
+					if (tables[i].id == tno) {
+						if (!tables[i].available) {
+							alert("此桌不可用");
+						} else if (tables[i].turnover) {
+							alert("此桌客人需要加菜");
+						}
+						break;
+					}
+				}
+			};
+
+			$scope.clickRemove = function(id) {
+				var size = $scope.orders.length;
+				for (var i = 0; i < size; i++) {
+					if ($scope.orders[i].id == id) {
+						$scope.orders.splice(i, 1);
+						break;
+					}
+				}
+			}
 
 			$scope.clickCount = function($event, id, increment) {
 				var isNew = true;
@@ -109,21 +151,26 @@ angular.module('starter.controllers', [ 'ngResource' ])
 				var count = 0;
 				for (var i = 0; i < size; i++) {
 					if ($scope.orders[i].id == id) {
-						$scope.orders[i].count += increment;
 						count = $scope.orders[i].count;
+						count += increment;
+						if (count <= 0) {
+							count = 0;
+							$scope.orders.splice(i, 1);
+						} else {
+							$scope.orders[i].count = count;
+						}
 						isNew = false;
 						break;
 					}
 				}
-				if (isNew) {
-					count = increment == 1 ? 1 : 0;
+				if (isNew && increment == 1) {
+					count = 1;
 					$scope.orders[size] = {
 						id : id,
 						count : count
 					}
 				}
 				document.getElementById('count' + id).innerHTML = "" + count;
-
 			}
 
 			var queryProducts = function(num) {
@@ -149,13 +196,9 @@ angular.module('starter.controllers', [ 'ngResource' ])
 		})
 
 .controller('OrderListCtrl', function($scope, $http) {
-
-	// $scope.maxTableNo = 0;
 	$scope.orders = null;
-	$scope.tables = null;
-
 	$scope.changeTableNo = function(tno) {
-		var tables = $scope.tables;
+		var tables = $scope.rangeTableModel.tables;
 		var turnoverId = null;
 		for (var i = 0; i < tables.length; i++) {
 			if (tables[i].id == tno) {
@@ -191,9 +234,11 @@ angular.module('starter.controllers', [ 'ngResource' ])
 	var queryTables = function() {
 		GET.url = baseUrl + 'availableTables';
 		$http(GET).success(function(data) {
-			$scope.tables = data.list;
-			$scope.maxTableNo = $scope.tables.length;
-			$scope.tableNo = 0;
+			$scope.rangeTableModel = {
+				tables : data.list,
+				maxTableNo : data.list.length,
+				tableNo : 0
+			}
 		}).error(function(data) {
 			alert(data);
 		});
