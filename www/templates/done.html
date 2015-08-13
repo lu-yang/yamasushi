@@ -1,0 +1,28 @@
+<ion-modal-view>
+    <ion-header-bar>
+      <h1 class="title">Orders</h1>
+    </ion-header-bar>
+    <ion-content>
+    <div class="list">
+		  <div class="item range range-positive">
+		    <i> Table No: {{rangeTableModel.tableNo}}</i>
+		    	<input type="range" ng-model="rangeTableModel.tableNo" max="{{rangeTableModel.maxTableNo}}" 
+		    			  min="0"  on-release="changeTableNo(rangeTableModel.tableNo)" /> 
+		    <i>{{rangeTableModel.maxTableNo}}</i>
+		  </div>
+	 </div>
+     <div class="list" style="width: 80%; height: 20%; overflow: auto;">
+			<div ng-repeat="item in orders" class="item item-thumbnail-left">
+				<h2>Name: {{ item.id }}</h2>
+				<label class="item item-input" id="count{{item.id}}">{{ item.count}}</label>
+				<button class="button button-small button-assertive" ng-click="clickCount($event, {{item.id}}, 1)">+</button>
+				<button class="button button-small button-assertive" ng-click="clickCount($event, {{item.id}}, -1)">-</button>
+				<button class="button button-small button-assertive" ng-click="clickRemove({{item.id}})">X</button>
+			</div>
+		</div>
+		<div class="list list-inset">
+			<button class="button button-small button-assertive" ng-click="clickOK()">OK</button>
+			<button class="button button-small button-assertive" ng-click="modal.hide()">Cancel</button>
+		</div>
+    </ion-content>
+</ion-modal-view>

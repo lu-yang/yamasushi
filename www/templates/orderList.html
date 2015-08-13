@@ -1,0 +1,20 @@
+<ion-view view-title="Order List"> 
+	<ion-content padding="true" 	scroll="false" class="has-header"> 
+		<div class="list">
+		  <div class="item range range-positive">
+		    <i> Table No: {{rangeTableModel.tableNo}}</i>
+		    	<input type="range" ng-model="rangeTableModel.tableNo" max="{{rangeTableModel.maxTableNo}}" 
+		    			  min="0"  on-release="changeTableNo(rangeTableModel.tableNo)" /> 
+		    <i>{{rangeTableModel.maxTableNo}}</i>
+		  </div>
+		</div>
+		<div class="list">
+			<div ng-repeat="item in orders" class="item item-thumbnail-left">
+				<img ng-src="{{ item.product.thumb }}">
+				<h2>Name: {{ item.product.productName }}</h2>
+				<h4>Price: {{ item.product.productPrice }}</h4>
+				<label class="item item-input" >{{item.count}}</label>
+			</div>
+		</div>
+	</ion-content> 
+</ion-view>
