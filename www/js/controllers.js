@@ -225,7 +225,9 @@ angular.module('starter.controllers', [ 'ngResource' ])
 			var list = data.list;
 			for (var i = 0; i < list.length; ++i) {
 				var thumb = list[i].product.thumb;
+	console.log(list[i].product);
 				list[i].product.thumb = convertImageURL(thumb);
+
 			}
 			$scope.orders = list;
 		}).error(function(data) {
@@ -251,6 +253,7 @@ angular.module('starter.controllers', [ 'ngResource' ])
 
 .controller('CategoryCtrl',function($scope,$http){
 	GET.url = baseUrl + 'categories/' + locale + '/' + 1;
+
 	$http(GET).success(function(data) {
 		if (!data.list || data.list.length == 0) {
 			alert("没有菜单。");
@@ -262,7 +265,7 @@ angular.module('starter.controllers', [ 'ngResource' ])
 			var thumb = list[i].thumb;
 			list[i].thumb = convertCatImageURL(thumb);
 		}
-		console.log(list);
+
 		$scope.category = list;
 	}).error(function(data) {
 		alert(data);
