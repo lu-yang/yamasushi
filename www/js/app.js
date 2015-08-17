@@ -77,6 +77,14 @@ app.config([ '$stateProvider', '$urlRouterProvider',
 						controller:"CategoryCtrl"
 					}
 				}
+			}).state('app.product',{
+				url:"/productList/{categoryId}/{categoryName}",
+				views : {
+					"menuContent":{
+						templateUrl :"templates/productList.html",
+						controller:"ProductListCtrl"
+					}
+				}
 			});
 			$urlRouterProvider.otherwise('/app/search');
 

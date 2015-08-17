@@ -225,7 +225,7 @@ angular.module('starter.controllers', [ 'ngResource' ])
 			var list = data.list;
 			for (var i = 0; i < list.length; ++i) {
 				var thumb = list[i].product.thumb;
-	console.log(list[i].product);
+
 				list[i].product.thumb = convertImageURL(thumb);
 
 			}
@@ -270,4 +270,30 @@ angular.module('starter.controllers', [ 'ngResource' ])
 	}).error(function(data) {
 		alert(data);
 	});
+})
+
+.controller('ProductListCtrl',function($scope,$http,$stateParams){
+		$scope.categoryId = $stateParams.categoryId;
+		$scope.categoryName = $stateParams.categoryName;
+		GET.url = baseUrl + 'products/' + locale + '/' + 	$scope.categoryId;
+
+
+	$http(GET).success(function(data) {
+		if (!data.list || data.list.length == 0) {
+			alert("这个分类没有菜。");
+			$scope.productList = null;
+			return;
+		}
+		var list = data.list;
+		for (var i = 0; i < list.length; ++i) {
+			var thumb = list[i].thumb;
+			list[i].thumb = convertImageURL(thumb);
+		}
+		
+		$scope.productList = list;
+		console.log($scope.categoryName);
+	}).error(function(data) {
+		alert(data);
+	});
+
 });
