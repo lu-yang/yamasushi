@@ -1,28 +1,51 @@
-<ion-view view-title="Order"> 
-	<ion-content padding="true" scroll="false" class="has-header">
-		<div class="list list-inset">
-			<label class="item item-input"><i class="icon ion-search placeholder-icon"></i>{{pnum}}</label>
-			<button class="button button-small button-assertive" ng-click="clickDone()">Done</button>
+<ion-view view-title="Recherche par numéro">
+	<ion-content    scroll="false" class="has-header">
+		<div class="bar bar-header item-input-inset">
+			<label class="item-input-wrapper">
+				<i class="icon ion-ios-search placeholder-icon"></i>
+				<input type="search" placeholder="Search" value="{{pnum}}">
+			</label>
+			<button class="button button-clear" ng-click="clickDone()">
+				Done
+			</button>
 		</div>
-		<div class="list" style="width: 100%; height: 60%; overflow: auto;">
+
+		<div class="list " style="width: 100%; height: 70%;  overflow: auto;">
 			<div ng-repeat="item in products" class="item item-thumbnail-left">
 				<img ng-src="{{ item.thumb }}">
 				<h2>Name: {{ item.productName }}</h2>
-				<h4>Price: {{ item.productPrice }}</h4>
-				<button class="button button-small button-assertive" ng-click="clickCount($event, {{item.id}}, 1)">+</button>
-				<label class="item item-input" id="count{{item.id}}">0</label>
-				<button class="button button-small button-assertive" ng-click="clickCount($event, {{item.id}}, -1)">-</button>
+				<h4>Price: {{ item.productPrice/100 }} €</h4>
+				<div class="row">
+					<div class="button-bar col-50">
+  <a class="col col-33.3 button button-small button-assertive " ng-click="clickCount($event, {{item.id}}, 1)"><i class="icon ion-plus-circled"></i></a>
+  <a class="col col-33.3 itemNum" id="count{{item.id}}">0</a>
+  <a class="col col-33.3 button  button-small  button-assertive " ng-click="clickCount($event, {{item.id}}, -1)"><i class="icon ion-minus-circled"></i></a>
+</div>
+
+
+			</div>
 			</div>
 		</div>
-		<div>
-			<div class="row">
-				<div class="col" ng-click="clickKey($event, {{i}})" ng-repeat="i in [1, 2, 3, 4, 5, 6]">{{i}}</div>
+
+		<div class="bar bar-footer bar-stable">
+			<div class="col">
+				<div class="row button-bar">
+					<a class="button col col-33.3" ng-click="clickKey($event, {{i}})" ng-repeat="i in [1, 2, 3]">{{i}}</a>
+				</div>
+				<div class="row button-bar">
+					<a class="button col col-33.3" ng-click="clickKey($event, {{i}})" ng-repeat="i in [ 4, 5, 6]">{{i}}</a>
+				</div>
+				<div class="row button-bar">
+					<a class="button col col-33.3" ng-click="clickKey($event, {{i}})" ng-repeat="i in [ 7,8,9]">{{i}}</a>
+				</div>
+				<div class="row button-bar">
+					<a class="button col col-33.3 button-small" ng-click="clickKey($event, 11)"><i class="icon ion-close-round"></i></a>
+					<a class="button col col-33.3 button-small" ng-click="clickKey($event, {{i}})" ng-repeat="i in [0]">{{i}}</a>
+					<a class="button col col-33.3 button-small" ng-click="clickKey($event, 10)">Effacer</i></a>
+				</div>
+
 			</div>
-			<div class="row">
-				<div class="col" ng-click="clickKey($event, {{i}})" ng-repeat="i in [7,8,9,0]">{{i}}</div>
-				<div class="col" ng-click="clickKey($event, 10)">&lt;-</div>
-				<div class="col" ng-click="clickKey($event, 11)">X</div>
-			</div>
+
 		</div>
 	</ion-content>
 </ion-view>

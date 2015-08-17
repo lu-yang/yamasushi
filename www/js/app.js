@@ -54,11 +54,11 @@ app.config([ '$stateProvider', '$urlRouterProvider',
 					}
 				}
 			}).state('app.order', {
-				url : "/order",
+				url : "/search",
 				views : {
 					'menuContent' : {
 						templateUrl : "templates/order.html",
-						controller : 'OrderCtrl'
+						controller : 'searchCtrl'
 					}
 				}
 			}).state('app.records', {
@@ -69,7 +69,15 @@ app.config([ '$stateProvider', '$urlRouterProvider',
 						controller : 'OrderListCtrl'
 					}
 				}
+			}).state('app.category',{
+				url:"/category",
+				views : {
+					"menuContent":{
+						templateUrl :"templates/category.html",
+						controller:"CategoryCtrl"
+					}
+				}
 			});
-			$urlRouterProvider.otherwise('/app/order');
+			$urlRouterProvider.otherwise('/app/search');
 
 		} ]);

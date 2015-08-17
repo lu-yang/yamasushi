@@ -4,7 +4,7 @@ angular.module('starter.controllers', [ 'ngResource' ])
 
 	baseUrl = $localStorage.get('server_address');
 	defaultThumb = $localStorage.get('defaultThumb');
-	categoryRootUr = $localStorage.get('categoryRootUr');
+	categoryRootUrl = $localStorage.get('categoryRootUrl');
 	productRootUrl = $localStorage.get('productRootUrl');
 
 	// With the new view caching in Ionic, Controllers are only called
@@ -46,6 +46,8 @@ angular.module('starter.controllers', [ 'ngResource' ])
 	// };
 })
 
+
+
 .controller('ConfigCtrl', function($scope, $stateParams, $localStorage, $http) {
 	$scope.serverAddress = baseUrl;
 	$scope.saveServerAddress = function(servAdd) {
@@ -59,8 +61,8 @@ angular.module('starter.controllers', [ 'ngResource' ])
 		$http(GET).success(function(data) {
 			defaultThumb = data.model.defaultThumb;
 			$localStorage.set('defaultThumb', data.model.defaultThumb);
-			categoryRootUr = data.model.categoryRootUr;
-			$localStorage.set('categoryRootUr', data.model.categoryRootUr);
+			categoryRootUrl = data.model.categoryRootUrl;
+			$localStorage.set('categoryRootUrl', data.model.categoryRootUrl);
 			productRootUrl = data.model.productRootUrl;
 			$localStorage.set('productRootUrl', data.model.productRootUrl);
 			alert("保存成功");
@@ -73,7 +75,7 @@ angular.module('starter.controllers', [ 'ngResource' ])
 })
 
 .controller(
-		'OrderCtrl',
+		'searchCtrl',
 		function($scope, $http, $ionicModal) {
 
 			$scope.pnum = "";
@@ -245,4 +247,24 @@ angular.module('starter.controllers', [ 'ngResource' ])
 	};
 
 	queryTables();
+})
+
+.controller('CategoryCtrl',function($scope,$http){
+	GET.url = baseUrl + 'categories/' + locale + '/' + 1;
+	$http(GET).success(function(data) {
+		if (!data.list || data.list.length == 0) {
+			alert("没有菜单。");
+			$scope.category = null;
+			return;
+		}
+		var list = data.list;
+		for (var i = 0; i < list.length; ++i) {
+			var thumb = list[i].thumb;
+			list[i].thumb = convertCatImageURL(thumb);
+		}
+		console.log(list);
+		$scope.category = list;
+	}).error(function(data) {
+		alert(data);
+	});
 });

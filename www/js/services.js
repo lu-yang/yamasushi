@@ -33,7 +33,7 @@ ProductService.factory('Product', [ '$resource', function($resource) {
 
 var baseUrl = '';
 var defaultThumb = '';
-var categoryRootUr = '';
+var categoryRootUrl = '';
 var productRootUrl = '';
 var authorization = 'YWRtaW46cGFzMndvcmQ=';
 var locale = 'fr';
@@ -58,6 +58,10 @@ function convertImageURL(thumb) {
 	return productRootUrl + thumb;
 }
 
+function convertCatImageURL(thumb) {
+	thumb = thumb ? thumb : defaultThumb;
+	return categoryRootUrl + thumb;
+}
 // angular.module('betalife.services', []).factory('$localStorage',
 // [ '$window', function($window) {
 // return {
