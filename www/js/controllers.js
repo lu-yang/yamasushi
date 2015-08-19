@@ -75,225 +75,236 @@ angular.module('starter.controllers', [ 'ngResource' ])
 })
 
 .controller(
-		'searchCtrl',
-		function($scope, $http, $ionicModal) {
+	'searchCtrl',
+	function($scope, $http, $ionicModal) {
 
-			$scope.pnum = "";
-			$scope.orders = [];
+		$scope.pnum = "";
+		$scope.orders = [];
 
-			$ionicModal.fromTemplateUrl('templates/done.html', {
-				scope : $scope,
-				animation : 'slide-in-up'
-			}).then(function(modal) {
-				$scope.modal = modal;
-			});
-			$scope.$on('modal.hidden', function() {
-				alert("hidden");
-				$scope.pnum = null;
-				queryProducts($scope.pnum);
-			});
+		$ionicModal.fromTemplateUrl('templates/done.html', {
+			scope : $scope,
+			animation : 'slide-in-up'
+		}).then(function(modal) {
+			$scope.modal = modal;
+		});
+		$scope.$on('modal.hidden', function() {
+			alert("hidden");
+			$scope.pnum = null;
+			queryProducts($scope.pnum);
+		});
 
-			$scope.clickKey = function($event, i) {
-				if (i == 10) {
-					$scope.pnum = $scope.pnum.length == 0 ? '' : $scope.pnum
-							.substring(0, $scope.pnum.length - 1);
-				} else if (i == 11) {
-					$scope.pnum = '';
-				} else {
-					$scope.pnum += i;
-				}
-				queryProducts($scope.pnum);
-			};
-
-			$scope.clickDone = function() {
-				var queryTables = function() {
-					GET.url = baseUrl + 'availableTables';
-					$http(GET).success(function(data) {
-						$scope.rangeTableModel = {
-							tables : data.list,
-							maxTableNo : data.list.length,
-							tableNo : 0
-						}
-					}).error(function(data) {
-						alert(data);
-					});
-				};
-
-				queryTables();
-				$scope.modal.show();
-			};
-
-			$scope.changeTableNo = function(tno) {
-				var tables = $scope.rangeTableModel.tables;
-				for (var i = 0; i < tables.length; i++) {
-					if (tables[i].id == tno) {
-						if (!tables[i].available) {
-							alert("此桌不可用");
-						} else if (tables[i].turnover) {
-							alert("此桌客人需要加菜");
-						}
-						break;
-					}
-				}
-			};
-
-			$scope.clickRemove = function(id) {
-				var size = $scope.orders.length;
-				for (var i = 0; i < size; i++) {
-					if ($scope.orders[i].id == id) {
-						$scope.orders.splice(i, 1);
-						break;
-					}
-				}
+		$scope.clickKey = function($event, i) {
+			if (i == 10) {
+				$scope.pnum = $scope.pnum.length == 0 ? '' : $scope.pnum
+				.substring(0, $scope.pnum.length - 1);
+			} else if (i == 11) {
+				$scope.pnum = '';
+			} else {
+				$scope.pnum += i;
 			}
+			queryProducts($scope.pnum);
+		};
 
-			$scope.clickCount = function($event, id, increment) {
-				var isNew = true;
-				var size = $scope.orders.length;
-				var count = 0;
-				for (var i = 0; i < size; i++) {
-					if ($scope.orders[i].id == id) {
-						count = $scope.orders[i].count;
-						count += increment;
-						if (count <= 0) {
-							count = 0;
-							$scope.orders.splice(i, 1);
-						} else {
-							$scope.orders[i].count = count;
-						}
-						isNew = false;
-						break;
-					}
-				}
-				if (isNew && increment == 1) {
-					count = 1;
-					$scope.orders[size] = {
-						id : id,
-						count : count
-					}
-				}
-				document.getElementById('count' + id).innerHTML = "" + count;
-			}
-
-			var queryProducts = function(num) {
-				// TODO query by product num, controller of server need to add
-				if (!num) {
-					num = 11;
-				}
-				GET.url = baseUrl + 'products/' + locale + '/' + num;
+		$scope.clickDone = function() {
+			var queryTables = function() {
+				GET.url = baseUrl + 'availableTables';
 				$http(GET).success(function(data) {
-					var list = data.list;
-					for (var i = 0; i < list.length; ++i) {
-						var thumb = list[i].thumb;
-						list[i].thumb = convertImageURL(thumb);
+					$scope.rangeTableModel = {
+						tables : data.list,
+						maxTableNo : data.list.length,
+						tableNo : 0
 					}
-					$scope.products = list;
-
 				}).error(function(data) {
 					alert(data);
 				});
 			};
 
-			queryProducts($scope.pnum);
-		})
+			queryTables();
+			$scope.modal.show();
+		};
 
-.controller('OrderListCtrl', function($scope, $http) {
-	$scope.orders = null;
-	$scope.changeTableNo = function(tno) {
-		var tables = $scope.rangeTableModel.tables;
-		var turnoverId = null;
-		for (var i = 0; i < tables.length; i++) {
-			if (tables[i].id == tno) {
-				if (tables[i].turnover) {
-					turnoverId = tables[i].turnover.id;
+		$scope.changeTableNo = function(tno) {
+			var tables = $scope.rangeTableModel.tables;
+			for (var i = 0; i < tables.length; i++) {
+				if (tables[i].id == tno) {
+					if (!tables[i].available) {
+						alert("此桌不可用");
+					} else if (tables[i].turnover) {
+						alert("此桌客人需要加菜");
+					}
+					break;
 				}
-				break;
+			}
+		};
+
+		$scope.clickRemove = function(id) {
+			var size = $scope.orders.length;
+			for (var i = 0; i < size; i++) {
+				if ($scope.orders[i].id == id) {
+					$scope.orders.splice(i, 1);
+					break;
+				}
 			}
 		}
-		if (!turnoverId) {
-			alert("此桌没有客人");
-			$scope.orders = null;
-			return;
+
+		$scope.clickCount = function($event, id, increment) {
+			var isNew = true;
+			var size = $scope.orders.length;
+			var count = 0;
+			for (var i = 0; i < size; i++) {
+				if ($scope.orders[i].id == id) {
+					count = $scope.orders[i].count;
+					count += increment;
+					if (count <= 0) {
+						count = 0;
+						$scope.orders.splice(i, 1);
+					} else {
+						$scope.orders[i].count = count;
+					}
+					isNew = false;
+					break;
+				}
+			}
+			if (isNew && increment == 1) {
+				count = 1;
+				$scope.orders[size] = {
+					id : id,
+					count : count
+				}
+			}
+			document.getElementById('count' + id).innerHTML = "" + count;
 		}
-		GET.url = baseUrl + 'orders/' + locale + '/' + turnoverId;
+
+		var queryProducts = function(num) {
+			// TODO query by product num, controller of server need to add
+			if (!num) {
+				num = 11;
+			}
+			GET.url = baseUrl + 'products/' + locale + '/' + num;
+			$http(GET).success(function(data) {
+				var list = data.list;
+				for (var i = 0; i < list.length; ++i) {
+					var thumb = list[i].thumb;
+					list[i].thumb = convertImageURL(thumb);
+				}
+				$scope.products = list;
+
+			}).error(function(data) {
+				alert(data);
+			});
+		};
+
+		queryProducts($scope.pnum);
+	})
+
+	.controller('OrderListCtrl', function($scope, $http) {
+		$scope.orders = null;
+		$scope.changeTableNo = function(tno) {
+			var tables = $scope.rangeTableModel.tables;
+			var turnoverId = null;
+			for (var i = 0; i < tables.length; i++) {
+				if (tables[i].id == tno) {
+					if (tables[i].turnover) {
+						turnoverId = tables[i].turnover.id;
+					}
+					break;
+				}
+			}
+			if (!turnoverId) {
+				alert("此桌没有客人");
+				$scope.orders = null;
+				return;
+			}
+			GET.url = baseUrl + 'orders/' + locale + '/' + turnoverId;
+			$http(GET).success(function(data) {
+				if (!data.list || data.list.length == 0) {
+					alert("此桌还没有点单。");
+					$scope.orders = null;
+					return;
+				}
+				var list = data.list;
+				for (var i = 0; i < list.length; ++i) {
+					var thumb = list[i].product.thumb;
+
+					list[i].product.thumb = convertImageURL(thumb);
+
+				}
+				$scope.orders = list;
+			}).error(function(data) {
+				alert(data);
+			});
+		};
+
+		var queryTables = function() {
+			GET.url = baseUrl + 'availableTables';
+			$http(GET).success(function(data) {
+				$scope.rangeTableModel = {
+					tables : data.list,
+					maxTableNo : data.list.length,
+					tableNo : 0
+				}
+			}).error(function(data) {
+				alert(data);
+			});
+		};
+
+		queryTables();
+	})
+
+	.controller('CategoryCtrl',function($scope,$http){
+		GET.url = baseUrl + 'categories/' + locale + '/' + 1;
+
 		$http(GET).success(function(data) {
 			if (!data.list || data.list.length == 0) {
-				alert("此桌还没有点单。");
-				$scope.orders = null;
+				alert("没有菜单。");
+				$scope.category = null;
 				return;
 			}
 			var list = data.list;
 			for (var i = 0; i < list.length; ++i) {
-				var thumb = list[i].product.thumb;
-
-				list[i].product.thumb = convertImageURL(thumb);
-
+				var thumb = list[i].thumb;
+				list[i].thumb = convertCatImageURL(thumb);
 			}
-			$scope.orders = list;
+			$scope.category = list;
 		}).error(function(data) {
 			alert(data);
 		});
-	};
+	})
 
-	var queryTables = function() {
-		GET.url = baseUrl + 'availableTables';
-		$http(GET).success(function(data) {
-			$scope.rangeTableModel = {
-				tables : data.list,
-				maxTableNo : data.list.length,
-				tableNo : 0
-			}
-		}).error(function(data) {
-			alert(data);
-		});
-	};
-
-	queryTables();
-})
-
-.controller('CategoryCtrl',function($scope,$http){
-	GET.url = baseUrl + 'categories/' + locale + '/' + 1;
-
-	$http(GET).success(function(data) {
-		if (!data.list || data.list.length == 0) {
-			alert("没有菜单。");
-			$scope.category = null;
-			return;
-		}
-		var list = data.list;
-		for (var i = 0; i < list.length; ++i) {
-			var thumb = list[i].thumb;
-			list[i].thumb = convertCatImageURL(thumb);
-		}
-
-		$scope.category = list;
-	}).error(function(data) {
-		alert(data);
-	});
-})
-
-.controller('ProductListCtrl',function($scope,$http,$stateParams){
+	.controller('ProductListCtrl',function($scope,$http,$stateParams){
 		$scope.categoryId = $stateParams.categoryId;
 		$scope.categoryName = $stateParams.categoryName;
 		GET.url = baseUrl + 'products/' + locale + '/' + 	$scope.categoryId;
+		$http(GET).success(function(data) {
+			if (!data.list || data.list.length == 0) {
+				alert("这个分类没有菜。");
+				$scope.productList = null;
+				return;
+			}
+			var list = data.list;
+			for (var i = 0; i < list.length; ++i) {
+				var thumb = list[i].thumb;
+				list[i].thumb = convertImageURL(thumb);
+			}
 
+			$scope.productList = list;
 
-	$http(GET).success(function(data) {
-		if (!data.list || data.list.length == 0) {
-			alert("这个分类没有菜。");
-			$scope.productList = null;
-			return;
-		}
-		var list = data.list;
-		for (var i = 0; i < list.length; ++i) {
-			var thumb = list[i].thumb;
-			list[i].thumb = convertImageURL(thumb);
-		}
-		
-		$scope.productList = list;
-		console.log($scope.categoryName);
-	}).error(function(data) {
-		alert(data);
+		}).error(function(data) {
+			alert(data);
+		});
+	})
+
+	.controller('tableListCtrl',function($scope,$http) {
+		GET.url = baseUrl + 'availableTables';
+		$http(GET).success(function(data) {
+			if (!data.list || data.list.length == 0) {
+				alert("没有桌子信息");
+				$scope.tableList = null;
+				return;
+			}
+			var list = data.list;
+			$scope.tableList = list;
+		}).error(function(data) {
+			alert(data);
+		});
 	});
-
-});

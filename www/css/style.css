@@ -3,3 +3,7 @@
   height:auto;
 }
 .itemNum{text-align: center;}
+
+.tblBtn{    -webkit-flex-wrap: wrap;
+    flex-wrap: wrap;}
+.tblBtn .button {width:100%;}

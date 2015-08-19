@@ -85,7 +85,16 @@ app.config([ '$stateProvider', '$urlRouterProvider',
 						controller:"ProductListCtrl"
 					}
 				}
-			});
+			}).state('app.tableList',{
+					url:"/tableList",
+					views : {
+						"menuContent":{
+							templateUrl : "templates/tableList.html",
+							controller : "tableListCtrl"
+						}
+					}
+			}
+			);
 			$urlRouterProvider.otherwise('/app/search');
 
 		} ]);
