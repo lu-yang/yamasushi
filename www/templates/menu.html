@@ -13,22 +13,23 @@
   </ion-side-menu-content>
 
   <ion-side-menu side="left">
-    <ion-header-bar class="bar-stable">
-      <h1 class="title">Left</h1>
+    <ion-header-bar class="bar-dark">
+      <h1 class="title">Yama Sushi</h1>
     </ion-header-bar>
-    <ion-content>
+    <ion-content class="dark">
+
       <ion-list>
         <ion-item menu-close href="#/app/tableList">
-        <i class="icon ion-android-restaurant"></i> Tables
+        <i class="icon ion-android-restaurant"></i> Tables ( <span ng-show="selectedTableId.length>0">T-{{selectedTableId}}</span> )
         </ion-item>
-        <ion-item menu-close href="#/app/category">
+        <ion-item menu-close href="#/app/tableList">
+        <i class="icon ion-bag"></i> Emporter
+        </ion-item>
+        <!-- <ion-item menu-close href="#/app/category">
         <i class="icon ion-ios-book"></i> Catégories
-        </ion-item>
+        </ion-item> -->
         <ion-item menu-close href="#/app/search">
         <i class="icon ion-search"></i> Recherche par numéro
-        </ion-item>
-        <ion-item menu-close href="#/app/records">
-          <i class="icon ion-ios-clock"></i> Historiques
         </ion-item>
         <ion-item menu-close href="#/app/config">
           <i class="icon ion-ios-gear"></i> Paramètre

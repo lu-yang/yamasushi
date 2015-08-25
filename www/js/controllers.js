@@ -6,7 +6,8 @@ angular.module('starter.controllers', [ 'ngResource' ])
 	defaultThumb = $localStorage.get('defaultThumb');
 	categoryRootUrl = $localStorage.get('categoryRootUrl');
 	productRootUrl = $localStorage.get('productRootUrl');
-
+  $scope.selectedTableId = null;
+	$scope.selectedTableId = window.localStorage.getItem('selectedTableId');
 	// With the new view caching in Ionic, Controllers are only called
 	// when they are recreated or on app start, instead of every page change.
 	// To listen for when this page is active (for example, to refresh data),
@@ -251,7 +252,7 @@ angular.module('starter.controllers', [ 'ngResource' ])
 		queryTables();
 	})
 
-	.controller('CategoryCtrl',function($scope,$http){
+	.controller('CategoryCtrl',function($scope,$http,$location){
 		GET.url = baseUrl + 'categories/' + locale + '/' + 1;
 
 		$http(GET).success(function(data) {
@@ -269,11 +270,28 @@ angular.module('starter.controllers', [ 'ngResource' ])
 		}).error(function(data) {
 			alert(data);
 		});
+
 	})
 
-	.controller('ProductListCtrl',function($scope,$http,$stateParams){
+	.controller('ProductListCtrl',function($scope,$http,$stateParams, $ionicModal){
 		$scope.categoryId = $stateParams.categoryId;
 		$scope.categoryName = $stateParams.categoryName;
+		$ionicModal.fromTemplateUrl('templates/productDetails.html', {
+    scope: $scope,
+    animation: 'slide-in-up'
+  }).then(function(modal) {
+    $scope.modal = modal;
+  });
+
+	$scope.openModal = function(index) {
+	 $scope.modal.show();
+	 $scope.product = $scope.productList[index]
+	 console.log($scope.productList[index]);
+ };
+ $scope.closeModal = function() {
+	 $scope.modal.hide();
+ };
+
 		GET.url = baseUrl + 'products/' + locale + '/' + 	$scope.categoryId;
 		$http(GET).success(function(data) {
 			if (!data.list || data.list.length == 0) {
@@ -294,7 +312,7 @@ angular.module('starter.controllers', [ 'ngResource' ])
 		});
 	})
 
-	.controller('tableListCtrl',function($scope,$http) {
+	.controller('tableListCtrl',function($scope,$http,$ionicActionSheet,$window) {
 		GET.url = baseUrl + 'availableTables';
 		$http(GET).success(function(data) {
 			if (!data.list || data.list.length == 0) {
@@ -304,6 +322,86 @@ angular.module('starter.controllers', [ 'ngResource' ])
 			}
 			var list = data.list;
 			$scope.tableList = list;
+		}).error(function(data) {
+			alert(data);
+		});
+
+			// 开桌Action
+		$scope.activeTableActionSheet = function(tableId){
+			// Show the action sheet
+			var hideSheet = $ionicActionSheet.show({
+				buttons: [
+					{ text: '<b> Activer T-'+tableId+'</b>' }
+				],
+			//	destructiveText: 'Delete',
+				titleText: "Qu'est ce que vous voulez faire ... ?",
+				cancelText: 'Annuler',
+				cancel: function() {
+					// add cancel code..
+				},
+				buttonClicked: function(index) {
+					return true;
+
+				}
+			});
+
+			// // For example's sake, hide the sheet after two seconds
+			// $timeout(function() {
+			// 	hideSheet();
+			// }, 2000);
+		};
+
+			// 查看已开桌
+		$scope.checkTableActionSheet = function(tableId,turnoverId){
+			// Show the action sheet
+			var hideSheet = $ionicActionSheet.show({
+				buttons: [
+					{ text: '<b> <i class="ion-eye"></i>  Voir T-'+tableId+'</b>' }
+				],
+				//destructiveText: "L'addition",
+				titleText: "Qu'est ce que vous voulez faire ... ?",
+				cancelText: 'Annuler',
+				cancel: function() {
+					// add cancel code..
+				},
+				buttonClicked: function(index) {
+					if(index == 0) {
+							window.localStorage.setItem('selectedTableId', tableId);
+
+							$window.location.href = '#/app/tabs/orderHistory/'+turnoverId;
+							$window.location.reload();
+					}
+					return true;
+				}
+			});
+
+		// 	// For example's sake, hide the sheet after two seconds
+		// 	$timeout(function() {
+		// 		hideSheet();
+		// 	}, 2000);
+	 };
+
+	})
+
+
+	.controller('orderHistoryCtrl',function($scope,$http,$stateParams){
+			$scope.turnoverId = $stateParams.turnoverId;
+			$scope.selectedTableId = 	window.localStorage.getItem('selectedTableId');
+		GET.url = baseUrl + 'orders/' + locale + '/' +$scope.turnoverId;
+		$http(GET).success(function(data) {
+			if (!data.list || data.list.length == 0) {
+				//alert("此桌还没有点单。");
+				$scope.orders = null;
+				return;
+			}
+			var list = data.list;
+			for (var i = 0; i < list.length; ++i) {
+				var thumb = list[i].product.thumb;
+
+				list[i].product.thumb = convertImageURL(thumb);
+
+			}
+			$scope.orders = list;
 		}).error(function(data) {
 			alert(data);
 		});

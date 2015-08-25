@@ -1,0 +1,15 @@
+<ion-view view-title="Historique / 点单记录 T-{{selectedTableId}}">
+  <ion-content>
+    <div ng-hide="orders" class="list " style="width: 100%; height: 70%;  overflow: auto;">
+          <h4 class="padding">Il n'y a aucune commande...</h4>
+            </div>
+<div ng-show="orders" class="list " style="width: 100%; height: 70%;  overflow: auto;">
+        <a href=""  ng-repeat="item in orders" class="item item-thumbnail-left">
+          <img ng-src="{{ item.product.thumb }}">
+          <h2> {{ item.product.productName }}</h2>
+          <p><b>qté / 数量: {{item.count}}</b></p>
+          <p><small><i class="ion-ios-clock-outline"></i> {{item.created | date:'d-MMM-y H:m:s'}}</small></p>
+        </a>
+        </div>
+  </ion-content>
+</ion-view>

@@ -3,8 +3,8 @@
     <div class="row tblBtn">
     <div class="col col-50"  ng-repeat="item in tableList" >
       <a class="button button-dark ion-bag" ng-show = "{{item.id == 0 && item.turnover == null}}"> Emporter / 外卖</a>
-      <a class="button button-stable" ng-show = "{{item.id != 0 && item.turnover == null}}"> {{ "T-" +item.id}}. <i class="icon ion-checkmark-circled balanced"></i></a>
-      <a class="button button-assertive" ng-show = "{{item.turnover != null}}"> {{ "T-" + item.id}}. Occupé / 用餐</a>
+      <a class="button button-stable" ng-click = "activeTableActionSheet(item.id)" ng-show = "{{item.id != 0 && item.turnover == null}}"> {{ "T-" +item.id}}. <i class="icon ion-checkmark-circled balanced"></i></a>
+      <a class="button button-assertive" ng-click ="checkTableActionSheet(item.id,item.turnover.id) " ng-show = "{{item.turnover != null}}"> {{ "T-" + item.id}}. Occupé / 用餐</a>
     </div>
 
 </div>
