@@ -6,8 +6,9 @@ angular.module('starter.controllers', [ 'ngResource' ])
 	defaultThumb = $localStorage.get('defaultThumb');
 	categoryRootUrl = $localStorage.get('categoryRootUrl');
 	productRootUrl = $localStorage.get('productRootUrl');
-  $scope.selectedTableId = null;
+	$scope.selectedTableId = null;
 	$scope.selectedTableId = window.localStorage.getItem('selectedTableId');
+	$scope.turnoverId = window.localStorage.getItem('turnoverId');
 	// With the new view caching in Ionic, Controllers are only called
 	// when they are recreated or on app start, instead of every page change.
 	// To listen for when this page is active (for example, to refresh data),
@@ -277,20 +278,20 @@ angular.module('starter.controllers', [ 'ngResource' ])
 		$scope.categoryId = $stateParams.categoryId;
 		$scope.categoryName = $stateParams.categoryName;
 		$ionicModal.fromTemplateUrl('templates/productDetails.html', {
-    scope: $scope,
-    animation: 'slide-in-up'
-  }).then(function(modal) {
-    $scope.modal = modal;
-  });
+			scope: $scope,
+			animation: 'slide-in-up'
+		}).then(function(modal) {
+			$scope.modal = modal;
+		});
 
-	$scope.openModal = function(index) {
-	 $scope.modal.show();
-	 $scope.product = $scope.productList[index]
-	 console.log($scope.productList[index]);
- };
- $scope.closeModal = function() {
-	 $scope.modal.hide();
- };
+		$scope.openModal = function(index) {
+			$scope.modal.show();
+			$scope.product = $scope.productList[index]
+			console.log($scope.productList[index]);
+		};
+		$scope.closeModal = function() {
+			$scope.modal.hide();
+		};
 
 		GET.url = baseUrl + 'products/' + locale + '/' + 	$scope.categoryId;
 		$http(GET).success(function(data) {
@@ -326,21 +327,44 @@ angular.module('starter.controllers', [ 'ngResource' ])
 			alert(data);
 		});
 
-			// 开桌Action
+		$scope.doRefresh = function(){
+			GET.url = baseUrl + 'availableTables';
+			$http(GET).success(function(data) {
+				if (!data.list || data.list.length == 0) {
+					alert("没有桌子信息");
+					$scope.tableList = null;
+					return;
+				}
+				var list = data.list;
+				$scope.tableList = list;
+				// Stop the ion-refresher from spinning
+				$scope.$broadcast('scroll.refreshComplete');
+			}).error(function(data) {
+				alert(data);
+			})
+		}
+		// 开桌Action
 		$scope.activeTableActionSheet = function(tableId){
 			// Show the action sheet
 			var hideSheet = $ionicActionSheet.show({
 				buttons: [
 					{ text: '<b> Activer T-'+tableId+'</b>' }
 				],
-			//	destructiveText: 'Delete',
+				//	destructiveText: 'Delete',
 				titleText: "Qu'est ce que vous voulez faire ... ?",
 				cancelText: 'Annuler',
 				cancel: function() {
-					// add cancel code..
+					return true;
 				},
 				buttonClicked: function(index) {
-					return true;
+
+					POST.url = baseUrl + 'openTable';
+					POST.data = JSON.stringify({"tableId":tableId});
+					$http(POST).success(function(data){
+						window.localStorage.setItem('selectedTableId', data.model.firstTableId);
+						window.localStorage.setItem('turnoverId', data.model.id);
+						$window.location.href = '#/app/tabs/orderHistory/'+data.model.id;
+					})
 
 				}
 			});
@@ -351,7 +375,7 @@ angular.module('starter.controllers', [ 'ngResource' ])
 			// }, 2000);
 		};
 
-			// 查看已开桌
+		// 查看已开桌
 		$scope.checkTableActionSheet = function(tableId,turnoverId){
 			// Show the action sheet
 			var hideSheet = $ionicActionSheet.show({
@@ -366,27 +390,27 @@ angular.module('starter.controllers', [ 'ngResource' ])
 				},
 				buttonClicked: function(index) {
 					if(index == 0) {
-							window.localStorage.setItem('selectedTableId', tableId);
-
-							$window.location.href = '#/app/tabs/orderHistory/'+turnoverId;
-							$window.location.reload();
+						window.localStorage.setItem('selectedTableId', tableId);
+						window.localStorage.setItem('turnoverId', turnoverId);
+						$window.location.href = '#/app/tabs/orderHistory/'+turnoverId;
+						$window.location.reload();
 					}
 					return true;
 				}
 			});
 
-		// 	// For example's sake, hide the sheet after two seconds
-		// 	$timeout(function() {
-		// 		hideSheet();
-		// 	}, 2000);
-	 };
+			// 	// For example's sake, hide the sheet after two seconds
+			// 	$timeout(function() {
+			// 		hideSheet();
+			// 	}, 2000);
+		};
 
 	})
 
 
 	.controller('orderHistoryCtrl',function($scope,$http,$stateParams){
-			$scope.turnoverId = $stateParams.turnoverId;
-			$scope.selectedTableId = 	window.localStorage.getItem('selectedTableId');
+		$scope.turnoverId = $stateParams.turnoverId;
+		$scope.selectedTableId = 	window.localStorage.getItem('selectedTableId');
 		GET.url = baseUrl + 'orders/' + locale + '/' +$scope.turnoverId;
 		$http(GET).success(function(data) {
 			if (!data.list || data.list.length == 0) {
@@ -405,4 +429,55 @@ angular.module('starter.controllers', [ 'ngResource' ])
 		}).error(function(data) {
 			alert(data);
 		});
+	})
+
+	.controller('adminCtrl',function($scope,$http,$stateParams,$ionicActionSheet){
+
+		GET.url = baseUrl + 'orders/' + locale + '/' + $scope.turnoverId;
+		$http(GET).success(function(data){
+			var totalPrice = 0;
+			if (!data.list || data.list.length == 0) {
+				//alert("此桌还没有点单。");
+				$scope.orders = null;
+				$scope.totalPrice = Number(0).toFixed(2);
+				return;
+			}else{
+			var list = data.list;
+			for (var i = 0; i < list.length; ++i) {
+		 		totalPrice +=  Number(list[i].product.productPrice * list[i].count/100);
+			}
+			$scope.totalPrice = totalPrice.toFixed(2);
+			$scope.checkStatus = list[0].turnover.checkout;
+			}
+		}).error(function(data) {
+			alert(data);
+		});
+
+		// 清台
+		$scope.checkoutActionSheet = function (){
+			var hideSheet = $ionicActionSheet.show({
+				buttons: [
+					{ text: '<b> <i class="ion-cash"></i> cash</b>' }
+				],
+				//destructiveText: "L'addition",
+				titleText: "Qu'est ce que vous voulez faire ... ?",
+				cancelText: 'Annuler',
+				cancel: function() {
+					// add cancel code..
+				},
+				buttonClicked: function(index) {
+					if(index == 0) {
+						POST.url = baseUrl + 'turnover' ;
+						POST.data = JSON.stringify({"id":$scope.turnoverId,"checkout":true,"tableId":$scope.selectedTableId});
+						$http(POST).success(function(data){
+							alert('清台成功');
+								window.location.href = '#/app/tableList';
+						})
+					}
+					return true;
+				}
+			});
+
+		};
+
 	});

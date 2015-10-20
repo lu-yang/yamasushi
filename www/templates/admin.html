@@ -1,0 +1,31 @@
+<ion-view view-title="管理 当前桌 T-{{selectedTableId}}">
+  <ion-content>
+    <ion-refresher
+  pulling-text="下拉更新..."
+  on-refresh="doRefresh()">
+</ion-refresher>
+<ul class="list">
+  <li class="item">
+    Numéro de table / 桌号 : T-{{selectedTableId}}
+  </li>
+  <li class="item">
+    Update / 最后更新 : 时间
+  </li>
+    <li class="item">
+      l'état / 当前状态 : <span ng-show="checkStatus == false">未结账</span>
+    </li>
+    <li class="item">
+      L'addition / 账单 : {{totalPrice}} €
+    </li>
+</ul>
+<button class="button button-block button-dark">
+Check-Out / 结账
+</button>
+<button class="button button-block button-dark" ng-click="checkoutActionSheet()">
+Libérer cette table / 清台
+</button>
+<button class="button button-block button-dark">
+Supprimer  / 免单
+</button>
+  </ion-content>
+</ion-view>

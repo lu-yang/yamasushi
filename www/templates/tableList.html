@@ -1,10 +1,15 @@
 <ion-view view-title="Liste des tables">
   <ion-content>
+    <ion-refresher
+  pulling-text="下拉更新..."
+  on-refresh="doRefresh()">
+</ion-refresher>
     <div class="row tblBtn">
     <div class="col col-50"  ng-repeat="item in tableList" >
       <a class="button button-dark ion-bag" ng-show = "{{item.id == 0 && item.turnover == null}}"> Emporter / 外卖</a>
-      <a class="button button-stable" ng-click = "activeTableActionSheet(item.id)" ng-show = "{{item.id != 0 && item.turnover == null}}"> {{ "T-" +item.id}}. <i class="icon ion-checkmark-circled balanced"></i></a>
-      <a class="button button-assertive" ng-click ="checkTableActionSheet(item.id,item.turnover.id) " ng-show = "{{item.turnover != null}}"> {{ "T-" + item.id}}. Occupé / 用餐</a>
+      <a class="button button-stable" ng-click = "activeTableActionSheet(item.id)" ng-show = "{{item.available != false && item.turnover.checkout == true }}"> {{ "T-" +item.id}}. <i class="icon ion-checkmark-circled balanced"></i></a>
+      <a class="button button-assertive" ng-click ="checkTableActionSheet(item.id,item.turnover.id) " ng-show = "{{item.available != false && item.turnover.checkout == false }}"> {{ "T-" + item.id}}. Occupé / 用餐</a>
+      <a class="button button-dark" ng-show = "{{item.available == false  }}"> {{ "T-" + item.id}}. non dispo. / 不可用</a>
     </div>
 
 </div>

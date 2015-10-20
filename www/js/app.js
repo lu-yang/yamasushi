@@ -11,6 +11,14 @@ app.run(function($ionicPlatform, $localStorage) {
 		// Hide the accessory bar by default (remove this to show the accessory
 		// bar above the keyboard
 		// for form inputs)
+		var isWebView = ionic.Platform.isWebView();
+		var currentPlatform = ionic.Platform.platform();
+		var deviceInformation = ionic.Platform.device();
+		var isIOS = ionic.Platform.isIOS();
+		var isAndroid = ionic.Platform.isAndroid();
+		if(isIOS){
+			ionic.Platform.fullScreen(true,false);
+		}
 		if (window.cordova && window.cordova.plugins.Keyboard) {
 			cordova.plugins.Keyboard.hideKeyboardAccessoryBar(true);
 		}
@@ -18,7 +26,11 @@ app.run(function($ionicPlatform, $localStorage) {
 			// org.apache.cordova.statusbar required
 			StatusBar.styleDefault();
 		}
+
 	});
+
+
+
 });
 
 app.factory('$localStorage', [ '$window', function($window) {
@@ -39,94 +51,102 @@ app.factory('$localStorage', [ '$window', function($window) {
 } ]);
 
 app.config([ '$stateProvider', '$urlRouterProvider','$ionicConfigProvider',
-		function($stateProvider, $urlRouterProvider,$ionicConfigProvider) {
-			$ionicConfigProvider.tabs.position('bottom');
-			$stateProvider.state('app', {
-				url : "/app",
-				abstract : true,
-				templateUrl : "templates/menu.html",
-				controller : 'AppCtrl'
-			}).state('app.config', {
-				url : "/config",
-				views : {
-					'menuContent' : {
-						templateUrl : "templates/config.html",
-						controller : 'ConfigCtrl'
-					}
-				}
-			}).state('app.order', {
-				url : "/search",
-				views : {
-					'menuContent' : {
-						templateUrl : "templates/order.html",
-						controller : 'searchCtrl'
-					}
-				}
-			}).state('app.records', {
-				url : "/records",
-				views : {
-					'menuContent' : {
-						templateUrl : "templates/orderList.html",
-						controller : 'OrderListCtrl'
-					}
-				}
-			}).state('app.tableList',{
-					url:"/tableList",
-					views : {
-						"menuContent":{
-							templateUrl : "templates/tableList.html",
-							controller : "tableListCtrl"
-						}
-					}
+function($stateProvider, $urlRouterProvider,$ionicConfigProvider) {
+	$ionicConfigProvider.tabs.position('bottom');
+	$stateProvider.state('app', {
+		url : "/app",
+		abstract : true,
+		templateUrl : "templates/menu.html",
+		controller : 'AppCtrl'
+	}).state('app.config', {
+		url : "/config",
+		views : {
+			'menuContent' : {
+				templateUrl : "templates/config.html",
+				controller : 'ConfigCtrl'
 			}
-		).state('app.table',{
-			url:"/table/{tableId}",
-			views : {
-				"menuContent":{
-					templateUrl : "templates/table.html",
-					controller : "tableCtrl"
-				}
+		}
+	}).state('app.order', {
+		url : "/search",
+		views : {
+			'menuContent' : {
+				templateUrl : "templates/order.html",
+				controller : 'searchCtrl'
 			}
+		}
+	}).state('app.records', {
+		url : "/records",
+		views : {
+			'menuContent' : {
+				templateUrl : "templates/orderList.html",
+				controller : 'OrderListCtrl'
+			}
+		}
+	}).state('app.tableList',{
+		url:"/tableList",
+		views : {
+			"menuContent":{
+				templateUrl : "templates/tableList.html",
+				controller : "tableListCtrl"
+			}
+		}
+	}
+).state('app.table',{
+	url:"/table/{tableId}",
+	views : {
+		"menuContent":{
+			templateUrl : "templates/table.html",
+			controller : "tableCtrl"
+		}
+	}
 
-		}).state('app.tabs',{
-			url:"/tabs",
-			views : {
-				"menuContent":{
-					templateUrl :"templates/tabs.html"
-				}
-			}
-		}).state('app.tabs.category',{
-			url:"/category",
-			views : {
-				"tab-category":{
-					templateUrl :"templates/category.html",
-					controller:"CategoryCtrl"
-				}
-			}
-		}).state('app.tabs.productList',{
-			url:"/product/:categoryId/:categoryName",
-			views : {
-				"tab-category":{
-					 templateUrl :"templates/productList.html",
-					 controller:"ProductListCtrl"
-				}
-			}
-		}).state('app.tabs.orderHistory',{
-			url:"/orderHistory/:turnoverId",
-			views : {
-				"tab-history":{
-					templateUrl :"templates/orderHistory.html",
-					controller:"orderHistoryCtrl"
-				}
-			}
-		}).state('app.tabs.cart',{
-			url:"/cart",
-			views : {
-				"tab-cart":{
-					templateUrl :"templates/cart.html"
-				}
-			}
-		});
-			$urlRouterProvider.otherwise('/app/search');
+}).state('app.tabs',{
+	url:"/tabs",
+	views : {
+		"menuContent":{
+			templateUrl :"templates/tabs.html"
+		}
+	}
+}).state('app.tabs.category',{
+	url:"/category",
+	views : {
+		"tab-category":{
+			templateUrl :"templates/category.html",
+			controller:"CategoryCtrl"
+		}
+	}
+}).state('app.tabs.productList',{
+	url:"/product/:categoryId/:categoryName",
+	views : {
+		"tab-category":{
+			templateUrl :"templates/productList.html",
+			controller:"ProductListCtrl"
+		}
+	}
+}).state('app.tabs.orderHistory',{
+	url:"/orderHistory/:turnoverId",
+	views : {
+		"tab-history":{
+			templateUrl :"templates/orderHistory.html",
+			controller:"orderHistoryCtrl"
+		}
+	}
+}).state('app.tabs.cart',{
+	url:"/cart",
+	views : {
+		"tab-cart":{
+			templateUrl :"templates/cart.html"
+		}
+	}
+}).state('app.tabs.admin',{
+	url:"/admin/:turnoverId",
+	views : {
+		"tab-admin":{
+			templateUrl :"templates/admin.html",
+				controller:"adminCtrl"
+		}
+	}
+});
+$urlRouterProvider.otherwise('/app/search');
 
-		} ]);
+} ]);
