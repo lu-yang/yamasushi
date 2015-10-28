@@ -16,16 +16,16 @@ app.run(function($ionicPlatform, $localStorage) {
 		var deviceInformation = ionic.Platform.device();
 		var isIOS = ionic.Platform.isIOS();
 		var isAndroid = ionic.Platform.isAndroid();
-		if(isIOS){
-			ionic.Platform.fullScreen(true,false);
-		}
+
 		if (window.cordova && window.cordova.plugins.Keyboard) {
 			cordova.plugins.Keyboard.hideKeyboardAccessoryBar(true);
 		}
-		if (window.StatusBar) {
-			// org.apache.cordova.statusbar required
-			StatusBar.styleDefault();
-		}
+		// if (window.StatusBar) {
+		// 	// org.apache.cordova.statusbar required
+		// 		// full screen
+		// 	// StatusBar.hide();
+		// 	// ionic.Platform.fullScreen();
+		// }
 
 	});
 
@@ -50,10 +50,50 @@ app.factory('$localStorage', [ '$window', function($window) {
 	}
 } ]);
 
+app.factory('$helpers',['$ionicPopup','$state',function($ionicPopup,$state){
+	return {
+		alertHelper: function($content){
+			var alertPopup = $ionicPopup.alert({
+				title: 'Check-Out',
+				template: $content
+			});
+			alertPopup.then(function(res) {
+				window.location.href = '#/app/tableList';
+
+			});
+		},
+		refreshHelper : function (){
+			$state.go($state.current, {}, {reload: true});
+		}
+	}
+
+}]);
+
+app.factory('$tunerover',['$http',function($http,$q){
+	var tunerover = [];
+	return {
+		getTurnoverById : function(turnoverId){
+			if(tunerover.length > 0){
+					 var deferred = $q.defer();
+					 deferred.resolve(tunerover);
+					 return deferred.promise;
+			 }
+			GET.url = baseUrl + 'turnover/totalPrice/' + turnoverId;
+			return $http(GET).then(function(result){
+               //modify collection of transactions...
+               tunerover = result.data;
+               return tunerover // this is data ^^ in the controller
+           });
+		}
+	}
+
+}]);
+
 app.config([ '$stateProvider', '$urlRouterProvider','$ionicConfigProvider',
 function($stateProvider, $urlRouterProvider,$ionicConfigProvider) {
 	$ionicConfigProvider.tabs.position('bottom');
 	$stateProvider.state('app', {
+		cache:false,
 		url : "/app",
 		abstract : true,
 		templateUrl : "templates/menu.html",
@@ -83,6 +123,7 @@ function($stateProvider, $urlRouterProvider,$ionicConfigProvider) {
 			}
 		}
 	}).state('app.tableList',{
+		cache: false,
 		url:"/tableList",
 		views : {
 			"menuContent":{
@@ -124,7 +165,8 @@ function($stateProvider, $urlRouterProvider,$ionicConfigProvider) {
 		}
 	}
 }).state('app.tabs.orderHistory',{
-	url:"/orderHistory/:turnoverId",
+	cache:false,
+	url:"/orderHistory",
 	views : {
 		"tab-history":{
 			templateUrl :"templates/orderHistory.html",
@@ -132,18 +174,21 @@ function($stateProvider, $urlRouterProvider,$ionicConfigProvider) {
 		}
 	}
 }).state('app.tabs.cart',{
+	cache:false,
 	url:"/cart",
 	views : {
 		"tab-cart":{
-			templateUrl :"templates/cart.html"
+			templateUrl :"templates/cart.html",
+			controller:"cartCtrl"
 		}
 	}
 }).state('app.tabs.admin',{
+	cache:false,
 	url:"/admin/:turnoverId",
 	views : {
 		"tab-admin":{
 			templateUrl :"templates/admin.html",
-				controller:"adminCtrl"
+			controller:"adminCtrl"
 		}
 	}
 });

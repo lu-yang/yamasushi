@@ -62,6 +62,8 @@ function convertCatImageURL(thumb) {
 	thumb = thumb ? thumb : defaultThumb;
 	return categoryRootUrl + thumb;
 }
+
+
 // angular.module('betalife.services', []).factory('$localStorage',
 // [ '$window', function($window) {
 // return {

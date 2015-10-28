@@ -6,7 +6,14 @@
     <h3 class="padding"><span class="pull-left">{{product.productName}}</span><span class="pull-right">{{product.productPrice/100 | currency:'€ '}}</span></h3>
 
   </div>
+  <div class="item item-thumb text-center">
+    <button class="button icon ion-ios-plus" ng-click="addCount(product.id)"></button>
+    <div class="productCount" id="productCount{{product.id}}">
+    <input type="number" value="{{currentCount[product.id]}}" name="productCount{{product.id}}">
+    </div>
+    <button class="button icon ion-ios-minus" ng-click="subtractCount(product.id)"></button>
 
+  </div>
   <div class="item item-body">
     <h3>Description / 描述</h3>
     <p ng-hide="{{product.description}}">

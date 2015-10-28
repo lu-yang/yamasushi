@@ -1,6 +1,6 @@
 angular.module('starter.controllers', [ 'ngResource' ])
 
-.controller('AppCtrl', function($scope, $ionicModal, $timeout, $localStorage) {
+.controller('AppCtrl', function($scope, $ionicModal, $timeout, $localStorage,$http,$tunerover,$state,$helpers) {
 
 	baseUrl = $localStorage.get('server_address');
 	defaultThumb = $localStorage.get('defaultThumb');
@@ -9,6 +9,21 @@ angular.module('starter.controllers', [ 'ngResource' ])
 	$scope.selectedTableId = null;
 	$scope.selectedTableId = window.localStorage.getItem('selectedTableId');
 	$scope.turnoverId = window.localStorage.getItem('turnoverId');
+
+	$scope.checkTurnoverHealth = function(turnoverId){
+		console.log("turnoverId = "+turnoverId);
+		 $tunerover.getTurnoverById(turnoverId).then(function(data){
+		//	 $scope.test = data.model.turnover;
+			 //console.log($scope.test);
+			console.log(data.model.turnover.checkout);
+			if(data.model.turnover.checkout != false){
+				$helpers.alertHelper('当前桌号已被清台');
+			}
+		//
+
+			});
+	}
+
 	// With the new view caching in Ionic, Controllers are only called
 	// when they are recreated or on app start, instead of every page change.
 	// To listen for when this page is active (for example, to refresh data),
@@ -51,6 +66,7 @@ angular.module('starter.controllers', [ 'ngResource' ])
 
 
 .controller('ConfigCtrl', function($scope, $stateParams, $localStorage, $http) {
+
 	$scope.serverAddress = baseUrl;
 	$scope.saveServerAddress = function(servAdd) {
 		$localStorage.set('server_address', servAdd);
@@ -68,6 +84,7 @@ angular.module('starter.controllers', [ 'ngResource' ])
 			productRootUrl = data.model.productRootUrl;
 			$localStorage.set('productRootUrl', data.model.productRootUrl);
 			alert("保存成功");
+			$scope.errorData = data;
 		}).error(function(data) {
 			alert("保存失败");
 		});
@@ -200,6 +217,7 @@ angular.module('starter.controllers', [ 'ngResource' ])
 	})
 
 	.controller('OrderListCtrl', function($scope, $http) {
+
 		$scope.orders = null;
 		$scope.changeTableNo = function(tno) {
 			var tables = $scope.rangeTableModel.tables;
@@ -254,6 +272,7 @@ angular.module('starter.controllers', [ 'ngResource' ])
 	})
 
 	.controller('CategoryCtrl',function($scope,$http,$location){
+			$scope.checkTurnoverHealth($scope.turnoverId);
 		GET.url = baseUrl + 'categories/' + locale + '/' + 1;
 
 		$http(GET).success(function(data) {
@@ -275,24 +294,10 @@ angular.module('starter.controllers', [ 'ngResource' ])
 	})
 
 	.controller('ProductListCtrl',function($scope,$http,$stateParams, $ionicModal){
+		$scope.checkTurnoverHealth($scope.turnoverId);
 		$scope.categoryId = $stateParams.categoryId;
 		$scope.categoryName = $stateParams.categoryName;
-		$ionicModal.fromTemplateUrl('templates/productDetails.html', {
-			scope: $scope,
-			animation: 'slide-in-up'
-		}).then(function(modal) {
-			$scope.modal = modal;
-		});
-
-		$scope.openModal = function(index) {
-			$scope.modal.show();
-			$scope.product = $scope.productList[index]
-			console.log($scope.productList[index]);
-		};
-		$scope.closeModal = function() {
-			$scope.modal.hide();
-		};
-
+		$scope.currentCount = [];
 		GET.url = baseUrl + 'products/' + locale + '/' + 	$scope.categoryId;
 		$http(GET).success(function(data) {
 			if (!data.list || data.list.length == 0) {
@@ -311,9 +316,127 @@ angular.module('starter.controllers', [ 'ngResource' ])
 		}).error(function(data) {
 			alert(data);
 		});
+
+		$ionicModal.fromTemplateUrl('templates/productDetails.html', {
+			scope: $scope,
+			animation: 'slide-in-up'
+		}).then(function(modal) {
+			$scope.modal = modal;
+		});
+
+		$scope.openModal = function(index) {
+			$scope.modal.show();
+			$scope.product = $scope.productList[index]
+			$scope.currentCount[$scope.product.id] = 0;
+			addData = {
+				"product_id":"3",
+				"list":{
+					"product_id":"3",
+					"product_name":"Product Name",
+					"category_id":"1",
+					"category_name":"Category name",
+					"count":"1",
+					"attribute":{
+
+					}
+				}
+			}
+			// test
+		var	cartData ={ "results":[
+				{
+					"product_id":"1",
+					"list":{
+						"product_id":"1",
+						"product_name":"Product Name",
+						"category_id":"1",
+						"category_name":"Category name",
+						"count":"1",
+						"attribute":{
+						}
+					}
+				},
+				{
+					"product_id":"2",
+					"list":{
+						"product_id":"2",
+						"product_name":"Product Name",
+						"category_id":"1",
+						"category_name":"Category name",
+						"count":"1",
+						"attribute":{
+
+						}
+					}
+				},
+				{
+					"product_id":"3",
+					"list":{
+						"product_id":"3",
+						"product_name":"Product Name",
+						"category_id":"1",
+						"category_name":"Category name",
+						"count":"1",
+						"attribute":{
+
+						}
+					}
+				}
+			]
+			};
+			$scope.cartData = cartData;
+
+			angular.forEach($scope.cartData,function(value,key){
+						value.push(addData);
+				});
+				console.log($scope.cartData);
+
+
+		// $scope.cartData.forEach(function (v) {
+		//
+		// 			//$scope.cartData.push(addData);
+		// 	});
+
+
+
+			//window.localStorage.setItem('cartData11122',null);
+			// window.localStorage.setItem('cartData-'+$scope.selectedTableId,JSON.stringify(cartData));
+			// $scope.testData = window.localStorage.getItem('cartData-'+$scope.selectedTableId);
+			// console.log(JSON.parse($scope.testData));
+			// console.log($scope.selectedTableId);
+			// var post = [{
+			//   name: 'Thoughts',
+			//   text: 'Today was a good day'
+			// },{		  name: 'Thoughts2',
+			// 		  text: 'Today was a good day2'}];
+			//
+			// window.localStorage['post'] = JSON.stringify(null);
+			//
+			// var post = JSON.parse(window.localStorage['post'] || '{}');
+			// console.log(post);
+			//
+		};
+		$scope.closeModal = function() {
+			$scope.modal.hide();
+		};
+
+		$scope.addCount = function(productId){
+			$scope.currentCount[productId] = $scope.currentCount[productId]+1;
+
+		}
+
+		$scope.subtractCount = function(productId){
+			if($scope.currentCount[productId] == 0){
+				$scope.currentCount[productId] = 0;
+			}else{
+				$scope.currentCount[productId] = $scope.currentCount[productId]-1;
+			}
+		}
 	})
 
-	.controller('tableListCtrl',function($scope,$http,$ionicActionSheet,$window) {
+	.controller('tableListCtrl',function($scope,$http,$ionicActionSheet,$window,$state,$helpers) {
+
+		//	$helpers.refreshHelper();
+
 		GET.url = baseUrl + 'availableTables';
 		$http(GET).success(function(data) {
 			if (!data.list || data.list.length == 0) {
@@ -323,26 +446,29 @@ angular.module('starter.controllers', [ 'ngResource' ])
 			}
 			var list = data.list;
 			$scope.tableList = list;
+			// Stop the ion-refresher from spinning
+			$scope.$broadcast('scroll.refreshComplete');
 		}).error(function(data) {
 			alert(data);
-		});
+		})
 
-		$scope.doRefresh = function(){
-			GET.url = baseUrl + 'availableTables';
-			$http(GET).success(function(data) {
-				if (!data.list || data.list.length == 0) {
-					alert("没有桌子信息");
-					$scope.tableList = null;
-					return;
-				}
-				var list = data.list;
-				$scope.tableList = list;
-				// Stop the ion-refresher from spinning
-				$scope.$broadcast('scroll.refreshComplete');
-			}).error(function(data) {
-				alert(data);
-			})
+$scope.doRefresh = function(){
+	GET.url = baseUrl + 'availableTables';
+	$http(GET).success(function(data) {
+		if (!data.list || data.list.length == 0) {
+			alert("没有桌子信息");
+			$scope.tableList = null;
+			return;
 		}
+		var list = data.list;
+		$scope.tableList = list;
+		// Stop the ion-refresher from spinning
+		$scope.$broadcast('scroll.refreshComplete');
+	}).error(function(data) {
+		alert(data);
+	})
+}
+
 		// 开桌Action
 		$scope.activeTableActionSheet = function(tableId){
 			// Show the action sheet
@@ -363,7 +489,7 @@ angular.module('starter.controllers', [ 'ngResource' ])
 					$http(POST).success(function(data){
 						window.localStorage.setItem('selectedTableId', data.model.firstTableId);
 						window.localStorage.setItem('turnoverId', data.model.id);
-						$window.location.href = '#/app/tabs/orderHistory/'+data.model.id;
+						$window.location.href = '#/app/tabs/orderHistory';
 					})
 
 				}
@@ -392,8 +518,8 @@ angular.module('starter.controllers', [ 'ngResource' ])
 					if(index == 0) {
 						window.localStorage.setItem('selectedTableId', tableId);
 						window.localStorage.setItem('turnoverId', turnoverId);
-						$window.location.href = '#/app/tabs/orderHistory/'+turnoverId;
-						$window.location.reload();
+						$window.location.href = '#/app/tabs/orderHistory';
+						//	$window.location.reload();
 					}
 					return true;
 				}
@@ -409,8 +535,10 @@ angular.module('starter.controllers', [ 'ngResource' ])
 
 
 	.controller('orderHistoryCtrl',function($scope,$http,$stateParams){
-		$scope.turnoverId = $stateParams.turnoverId;
+		$scope.checkTurnoverHealth($scope.turnoverId);
+		$scope.turnoverId = window.localStorage.getItem('turnoverId');
 		$scope.selectedTableId = 	window.localStorage.getItem('selectedTableId');
+
 		GET.url = baseUrl + 'orders/' + locale + '/' +$scope.turnoverId;
 		$http(GET).success(function(data) {
 			if (!data.list || data.list.length == 0) {
@@ -431,8 +559,22 @@ angular.module('starter.controllers', [ 'ngResource' ])
 		});
 	})
 
-	.controller('adminCtrl',function($scope,$http,$stateParams,$ionicActionSheet){
+	.controller('cartCtrl',function($scope,$http,$ionicPopup,$filter){
+			$scope.checkTurnoverHealth($scope.turnoverId);
+		//var single_object = null;
+		$scope.testData = JSON.parse(window.localStorage.getItem('cartData-'+$scope.selectedTableId));
+		 single_object = $filter('filter')($scope.testData.results, {product_id:2})[0];
+		console.log($scope.testData);
+		console.log(single_object);
+	})
 
+
+
+	.controller('adminCtrl',function($scope,$http,$ionicPopup,$ionicActionSheet,$helpers){
+		$scope.checkTurnoverHealth($scope.turnoverId);
+		$scope.turnoverId = window.localStorage.getItem('turnoverId');
+		$scope.selectedTableId = 	window.localStorage.getItem('selectedTableId');
+		/* get order informations and calculated total price */
 		GET.url = baseUrl + 'orders/' + locale + '/' + $scope.turnoverId;
 		$http(GET).success(function(data){
 			var totalPrice = 0;
@@ -440,14 +582,15 @@ angular.module('starter.controllers', [ 'ngResource' ])
 				//alert("此桌还没有点单。");
 				$scope.orders = null;
 				$scope.totalPrice = Number(0).toFixed(2);
+				$scope.checkStatus = false;
 				return;
 			}else{
-			var list = data.list;
-			for (var i = 0; i < list.length; ++i) {
-		 		totalPrice +=  Number(list[i].product.productPrice * list[i].count/100);
-			}
-			$scope.totalPrice = totalPrice.toFixed(2);
-			$scope.checkStatus = list[0].turnover.checkout;
+				var list = data.list;
+				for (var i = 0; i < list.length; ++i) {
+					totalPrice +=  Number(list[i].product.productPrice * list[i].count/100);
+				}
+				$scope.totalPrice = totalPrice.toFixed(2);
+				$scope.checkStatus = list[0].turnover.checkout;
 			}
 		}).error(function(data) {
 			alert(data);
@@ -455,28 +598,25 @@ angular.module('starter.controllers', [ 'ngResource' ])
 
 		// 清台
 		$scope.checkoutActionSheet = function (){
-			var hideSheet = $ionicActionSheet.show({
-				buttons: [
-					{ text: '<b> <i class="ion-cash"></i> cash</b>' }
-				],
-				//destructiveText: "L'addition",
-				titleText: "Qu'est ce que vous voulez faire ... ?",
-				cancelText: 'Annuler',
-				cancel: function() {
-					// add cancel code..
-				},
-				buttonClicked: function(index) {
-					if(index == 0) {
-						POST.url = baseUrl + 'turnover' ;
-						POST.data = JSON.stringify({"id":$scope.turnoverId,"checkout":true,"tableId":$scope.selectedTableId});
-						$http(POST).success(function(data){
-							alert('清台成功');
-								window.location.href = '#/app/tableList';
-						})
-					}
-					return true;
+
+			var confirmPopup = $ionicPopup.confirm({
+				title: 'Check-Out / 结账',
+				template: 'Vous êtes sûre ?'
+			});
+			confirmPopup.then(function(res) {
+				if(res) {
+					POST.url = baseUrl + 'turnover' ;
+					POST.data = JSON.stringify({"id":$scope.turnoverId,"checkout":true,"tableId":$scope.selectedTableId});
+					$http(POST).success(function(data){
+						window.localStorage.setItem('selectedTableId', null);
+						window.localStorage.setItem('turnoverId', null);
+						$helpers.alertHelper('清台成功');
+					})
+				} else {
+
 				}
 			});
+
 
 		};
 
