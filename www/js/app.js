@@ -50,9 +50,9 @@ app.factory('$localStorage', [ '$window', function($window) {
 	}
 } ]);
 
-app.factory('$helpers',['$ionicPopup','$state',function($ionicPopup,$state){
+app.factory('$helpers',['$ionicPopup','$state','$ionicLoading',function($ionicPopup,$state,$ionicLoading,$scope){
 	return {
-		alertHelper: function($content){
+		checkoutAlertHelper: function($content){
 			var alertPopup = $ionicPopup.alert({
 				title: 'Check-Out',
 				template: $content
@@ -62,28 +62,66 @@ app.factory('$helpers',['$ionicPopup','$state',function($ionicPopup,$state){
 
 			});
 		},
+		alertHelper: function($content){
+			var alertPopup = $ionicPopup.alert({
+				title: '提示',
+				template: $content
+			});
+		},
+		redirectAlertHelper: function($content,$url){
+			var alertPopup = $ionicPopup.alert({
+				title: '提示',
+				template: $content
+			});
+			alertPopup.then(function(res) {
+				window.location.href = '#/app' + $url;
+			});
+		},
 		refreshHelper : function (){
 			$state.go($state.current, {}, {reload: true});
+		},
+		alertBeforeDelele : function ($content,$selectedTableId){
+			var confirmPopup = $ionicPopup.confirm({
+				title : 'Efface tous',
+				template : $content
+			});
+			confirmPopup.then(function(res){
+				if(res) {
+					cartData = [];
+					window.localStorage.setItem('cartData-'+$selectedTableId, cartData);
+					$state.go($state.current, {}, {reload: true});
+				}else {
+
+				}
+			});
+		},
+		loadingShow : function (){
+			$ionicLoading.show({
+				template: 'Loading...'
+			});
+		},
+		loadingHide : function (){
+			$ionicLoading.hide();
 		}
 	}
 
 }]);
 
-app.factory('$tunerover',['$http',function($http,$q){
+app.factory('$turnover',['$http',function($http,$q){
 	var tunerover = [];
 	return {
 		getTurnoverById : function(turnoverId){
 			if(tunerover.length > 0){
-					 var deferred = $q.defer();
-					 deferred.resolve(tunerover);
-					 return deferred.promise;
-			 }
+				var deferred = $q.defer();
+				deferred.resolve(tunerover);
+				return deferred.promise;
+			}
 			GET.url = baseUrl + 'turnover/totalPrice/' + turnoverId;
 			return $http(GET).then(function(result){
-               //modify collection of transactions...
-               tunerover = result.data;
-               return tunerover // this is data ^^ in the controller
-           });
+				//modify collection of transactions...
+				turnover = result.data;
+				return turnover // this is data ^^ in the controller
+			});
 		}
 	}
 

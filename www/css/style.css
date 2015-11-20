@@ -30,15 +30,15 @@
     float: right;
   }
 
-.productCount{  display: inline;}
-.productCount input{
+  .productCount{  display: inline;}
+  .productCount input{
     width: 70px;
     font-size: 25px;
     text-align: center;
     height: 47px;
     border: 1px solid #aaa;
-      display: inline;
-      box-shadow:none;
+    display: inline;
+    box-shadow:none;
   }
 
   /* android customer button */
@@ -65,3 +65,23 @@
                 display: none; }
                 .platform-android .action-sheet-has-icons .button {
                   padding-left: 56px; }
+
+                  .item h2{font-size: 23px;}
+
+                  .mymodal .closeBtn {
+
+                    position: absolute;
+                    top: 0;
+                    right: 0;
+                  }
+
+                  @media (min-width: 680px) {
+                    .mymodal {
+                      width: 90%;
+                      height: 90%;
+                      top: 5%;
+                      left: 5%;
+                      right: 5%;
+                      bottom: 5%;
+                    }
+                  }

@@ -1,32 +1,53 @@
-<ion-modal-view>
-  <div class="list card">
+<ion-modal-view class="mymodal">
+  <div class="card">
 
-  <div class="item item-thumb text-center">
-    <img src="{{product.thumb}}" >
-    <h3 class="padding"><span class="pull-left">{{product.productName}}</span><span class="pull-right">{{product.productPrice/100 | currency:'€ '}}</span></h3>
+    <div class="item item-thumbnail-left text-center">
+            <img src="{{product.thumb}}"  >
+          <h3 class="padding-left"><span class="pull-left">{{product.productName}}</span></h3>
+          <h3 class="padding-left"><span class="pull-left">{{product.productPrice/100 | currency:'€ '}}</span></h3>
+          <h3 class="padding-left"><span class="pull-left">Description</span></h3>
+          <div class="padding-left pull-left">
+            <p ng-hide="{{product.description}}">
+              Rien...
+            </p>
+            <p ng-show="{{product.description}}">
+              {{product.description}}
+            </p>
+          </div>
+    <button class="button  button-dark closeBtn" ng-click="closeModal()"><i class="icon ion-close-circled"></i></button>
+      </div>
 
-  </div>
-  <div class="item item-thumb text-center">
-    <button class="button icon ion-ios-plus" ng-click="addCount(product.id)"></button>
-    <div class="productCount" id="productCount{{product.id}}">
-    <input type="number" value="{{currentCount[product.id]}}" name="productCount{{product.id}}">
+    <!-- <form name="myForm" ng-submit="onSubmit()"> -->
+    <div class="text-center">
+
+      <div class="item item-text-wrap">
+        <button class="button icon ion-ios-minus" ng-click="subtractCount()"></button>
+        <div class="productCount" id="productCount{{product.id}}">
+          <input  ng-model="currentCount" name="count"    >
+        </div>
+        <button class="button icon ion-ios-plus" ng-click="addCount()"></button>
+        <button class="button button-positive" ng-click="onSubmit()"><i class="icon ion-android-cart"></i> Ajouter</button>
+      </div>
+
+      <!-- attributions -->
+      <div class="item item-divider" ng-show = "product.attributions">
+        Options
+      </div>
+      <div class="item item-text-wrap" ng-show = "product.attributions">
+        <div class="list">
+        <label class="item item-radio " ng-repeat = "(key , attr) in product.attributions">
+          <input type="radio" name="group" ng-model = "attrValue.key" ng-value="{{key}}">
+          <div class="item-content">
+            <span class="pull-left">{{attr.attributionName}}</span><span class="pull-right">{{attr.attributionPrice/100 | currency : "€"}}</span>
+            <div class="clearfix"></div>
+          </div>
+          <i class="radio-icon ion-checkmark"></i>
+        </label>
+
+      </div>
+      </div>
     </div>
-    <button class="button icon ion-ios-minus" ng-click="subtractCount(product.id)"></button>
+
 
   </div>
-  <div class="item item-body">
-    <h3>Description / 描述</h3>
-    <p ng-hide="{{product.description}}">
-      Rien... / 没有描述...
-    </p>
-    <p ng-show="{{product.description}}">
-    {{product.description}}
-    </p>
-  </div>
-
-  <div>
-    <button class="button button-full button-dark" ng-click="closeModal()"><i class="icon ion-close-circled"></i> Fermer</button>
-  </div>
-
-</div>
 </ion-modal-view>
