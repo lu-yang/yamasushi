@@ -1,5 +1,4 @@
-angular.module('starter.controllers', [ 'ngResource' ])
-
+angular.module('starter.controllers', [ 'ngResource','customFilters','customHelpers'])
 
 	.controller('OrderListCtrl', function($scope, $http) {
 

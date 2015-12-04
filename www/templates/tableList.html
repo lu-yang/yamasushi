@@ -6,7 +6,7 @@
 </ion-refresher>
     <div class="row tblBtn">
     <div class="col col-50"  ng-repeat="item in tableList" >
-      <a class="button button-dark ion-bag" ng-show = "{{item.id == 0 && item.turnover == null}}"> Emporter </a>
+      <!-- <a class="button button-dark ion-bag" ng-show = "{{item.id == 0 && item.turnover == null}}"> Emporter </a> -->
       <a class="button button-stable" ng-click = "activeTableActionSheet(item.id)" ng-show = "{{item.available != false && item.turnover.checkout == true }}"> {{ "T-" +item.id}}. <i class="icon ion-checkmark-circled balanced"></i></a>
       <a class="button button-assertive" ng-click ="checkTableActionSheet(item.id,item.turnover.id) " ng-show = "{{item.available != false && item.turnover.checkout == false }}"> {{ "T-" + item.id}}. Occupé</a>
       <a class="button button-dark" ng-show = "{{item.available == false  }}"> {{ "T-" + item.id}}. non dispo.</a>

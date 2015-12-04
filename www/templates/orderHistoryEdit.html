@@ -1,0 +1,37 @@
+
+<ion-view view-title="Modifier Commandes">
+  <ion-nav-buttons side="right">
+    <!-- <button class="button button-icon ion-ios-checkmark-empty ">save</button> -->
+    <a href="#/app/tabs/orderHistory" class="button button-assertive "><i class="ion ion-checkmark"></i> Enregistrer</a>
+  </ion-nav-buttons>
+
+  <ion-content>
+
+    <div ng-hide="cartData" class="list " style="width: 100%; height: 70%;  overflow: auto;">
+      <h4 class="padding"> 0 plats dans la liste...    </h4><i class="fa fa-bars"></i>
+    </div>
+    <div ng-show="cartData" class="list " style="width: 100%; height: 70%;  overflow: auto;">
+
+      <div href="" ng-repeat="(index,item) in orders" class="item item-thumbnail-left" >
+
+
+        <img ng-src="{{ item.product.thumb }}">
+        <small><i class="ion-ios-clock-outline"></i> {{item.created|date :'H:mm'}}</small>
+        <h3>{{ item.product.productName }} <small ng-show = "item.orderAttributions">({{item.product.attrName}})</small></h3>
+        <h4 class="assertive">{{item.category.name}}</h4>
+
+        <div class=" ">
+            <span class="badge badge-assertive" ng-hide="newCount[index]-item.count ==0">{{newCount[index]-item.count | numberExpress}}</span>
+
+          <button class="button icon ion-ios-minus" ng-click="subtractCount({{index}})"></button>
+          <div class="productCount" id="productCount{{product.id}}">
+            <input  ng-model="newCount[index]" name="count" >
+          </div>
+          <button class="button icon ion-ios-plus" ng-click="addCount({{index}})"></button>
+        </div>
+
+
+      </div>
+    </div>
+  </ion-content>
+</ion-view>

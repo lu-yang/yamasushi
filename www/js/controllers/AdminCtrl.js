@@ -1,5 +1,6 @@
 angular.module('starter.controllers')
 	.controller('adminCtrl',function($scope,$http,$ionicPopup,$ionicActionSheet,$helpers,$localStorage){
+		$helpers.loadingShow();
 		$scope.turnoverId = $localStorage.get('turnoverId');
 		$scope.selectedTableId = 	$localStorage.get('selectedTableId');
 		$scope.checkTurnoverHealth($scope.turnoverId);
@@ -7,6 +8,7 @@ angular.module('starter.controllers')
 		/* get order informations and calculated total price */
 		GET.url = baseUrl + 'orders/' + locale + '/' + $scope.turnoverId;
 		$http(GET).success(function(data){
+			  $helpers.loadingHide();
 			var totalPrice = 0;
 			if (!data.list || data.list.length == 0) {
 				//alert("此桌还没有点单。");
@@ -29,8 +31,10 @@ angular.module('starter.controllers')
 		});
 
 		$scope.doRefresh = function(){
+			$helpers.loadingShow();
 			GET.url = baseUrl + 'orders/' + locale + '/' + $scope.turnoverId;
 			$http(GET).success(function(data){
+				$helpers.loadingHide();
 				var totalPrice = 0;
 				if (!data.list || data.list.length == 0) {
 					//alert("此桌还没有点单。");

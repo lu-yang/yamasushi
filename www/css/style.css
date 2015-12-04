@@ -1,4 +1,6 @@
 /* Empty. Add your own CSS if you like */
+.loading .spinner{ stroke:#fff;}
+.item .badge{top:27px;}
 .bar-footer{
   height:auto;
 }

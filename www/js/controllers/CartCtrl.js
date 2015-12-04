@@ -74,7 +74,7 @@ angular.module('starter.controllers')
         key: 0
       };
     }
-  $scope.cart = JSON.parse($localStorage.get('cartData-'+$scope.selectedTableId));
+    $scope.cart = JSON.parse($localStorage.get('cartData-'+$scope.selectedTableId));
 
   };
   $scope.closeModal = function() {
@@ -99,6 +99,7 @@ angular.module('starter.controllers')
     if($scope.currentCount <= 0){
       $scope.currentCount = 0;
     }else{
+
       if($scope.cart ==null){
         $scope.cart = [];
       }
@@ -125,24 +126,24 @@ angular.module('starter.controllers')
           "productInfo":{"productName":$scope.product.productName,"categoryName":$scope.categoryName,"productPrice":$scope.product.productPrice,"thumb":$scope.product.thumb}
         });
       }
-      console.log($scope.cart);
+
       $localStorage.set('cartData-'+$scope.selectedTableId,angular.toJson($scope.cart));
-       $scope.currentCount = 0;
-       $scope.cartData = $localStorage.get('cartData-'+$scope.selectedTableId);
-       console.log($scope.cartData);
-      // $helpers.alertHelper('reussit');
+      $scope.currentCount = 0;
+      $scope.cartData = $localStorage.get('cartData-'+$scope.selectedTableId);
+      $helpers.alertHelper('reussit');
     }
   }
 })
 
 
-.controller('orderHistoryCtrl',function($scope,$http,$stateParams,$localStorage){
+.controller('orderHistoryCtrl',function($scope,$http,$state,$stateParams,$localStorage,$helpers){
   $scope.turnoverId = $localStorage.get('turnoverId');
   $scope.selectedTableId = 	$localStorage.get('selectedTableId');
   $scope.checkTurnoverHealth($scope.turnoverId);
-
-  GET.url = baseUrl + 'orders/' + locale + '/' +$scope.turnoverId;
+  $helpers.loadingShow();
+  GET.url = baseUrl + 'extOrders/' + locale + '/' +$scope.turnoverId;
   $http(GET).success(function(data) {
+    $helpers.loadingHide();
     if (!data.list || data.list.length == 0) {
       //alert("此桌还没有点单。");
       $scope.orders = null;
@@ -156,10 +157,59 @@ angular.module('starter.controllers')
 
     }
     $scope.orders = list;
-    console.log($scope.orders);
   }).error(function(data) {
     alert(data);
   });
+
+  $scope.orderEdit = function(){
+    // window.location.href = '#/app/orderHistoryEdit';
+    $state.go('app.orderHistoryEdit');
+  }
+
+})
+.controller('orderHistoryEditCtrl',function($scope,$http,$stateParams,$localStorage,$helpers){
+  $scope.turnoverId = $localStorage.get('turnoverId');
+  $scope.selectedTableId = 	$localStorage.get('selectedTableId');
+  $scope.checkTurnoverHealth($scope.turnoverId);
+  $helpers.loadingShow();
+  GET.url = baseUrl + 'extOrders/' + locale + '/' +$scope.turnoverId;
+  $http(GET).success(function(data) {
+    $helpers.loadingHide();
+    if (!data.list || data.list.length == 0) {
+      //alert("此桌还没有点单。");
+      $scope.orders = null;
+      return;
+    }
+    var list = data.list;
+    for (var i = 0; i < list.length; ++i) {
+      var thumb = list[i].product.thumb;
+
+      list[i].product.thumb = convertImageURL(thumb);
+
+    }
+    $scope.orders = list;
+    newCount = [];
+    for(i=0;i<$scope.orders.length;i++){
+      newCount[i] = $scope.orders[i].count;
+    }
+    $scope.newCount = newCount;
+
+  }).error(function(data) {
+    alert(data);
+  });
+
+  $scope.addCount = function(i){
+    $scope.newCount[i] = +($scope.newCount[i] +1);
+  }
+
+  $scope.subtractCount = function(i){
+    product = $scope.orders[i];
+    currentCount  = product.count;
+    if($scope.newCount[i] > 0 ){
+      $scope.newCount[i] = $scope.newCount[i] -1;
+    }
+  }
+
 })
 
 .controller('cartCtrl',function($scope,$http,$ionicPopup,$filter,$localStorage,$helpers){
@@ -173,12 +223,9 @@ angular.module('starter.controllers')
   }else{
     $scope.cartData = null;
   }
-  console.log($scope.cartData);
+
   $scope.removeItem = function(index) {
-
     $scope.cartData.splice(index, 1);
-
-
   };
 
   $scope.removeAll = function(){

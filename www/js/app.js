@@ -50,62 +50,7 @@ app.factory('$localStorage', [ '$window', function($window) {
 	}
 } ]);
 
-app.factory('$helpers',['$ionicPopup','$state','$ionicLoading',function($ionicPopup,$state,$ionicLoading,$scope){
-	return {
-		checkoutAlertHelper: function($content){
-			var alertPopup = $ionicPopup.alert({
-				title: 'Check-Out',
-				template: $content
-			});
-			alertPopup.then(function(res) {
-				window.location.href = '#/app/tableList';
 
-			});
-		},
-		alertHelper: function($content){
-			var alertPopup = $ionicPopup.alert({
-				title: '提示',
-				template: $content
-			});
-		},
-		redirectAlertHelper: function($content,$url){
-			var alertPopup = $ionicPopup.alert({
-				title: '提示',
-				template: $content
-			});
-			alertPopup.then(function(res) {
-				window.location.href = '#/app' + $url;
-			});
-		},
-		refreshHelper : function (){
-			$state.go($state.current, {}, {reload: true});
-		},
-		alertBeforeDelele : function ($content,$selectedTableId){
-			var confirmPopup = $ionicPopup.confirm({
-				title : 'Efface tous',
-				template : $content
-			});
-			confirmPopup.then(function(res){
-				if(res) {
-					cartData = [];
-					window.localStorage.setItem('cartData-'+$selectedTableId, cartData);
-					$state.go($state.current, {}, {reload: true});
-				}else {
-
-				}
-			});
-		},
-		loadingShow : function (){
-			$ionicLoading.show({
-				template: 'Loading...'
-			});
-		},
-		loadingHide : function (){
-			$ionicLoading.hide();
-		}
-	}
-
-}]);
 
 app.factory('$turnover',['$http',function($http,$q){
 	var tunerover = [];
@@ -211,6 +156,15 @@ function($stateProvider, $urlRouterProvider,$ionicConfigProvider) {
 			controller:"orderHistoryCtrl"
 		}
 	}
+}).state('app.orderHistoryEdit',{
+	cache:false,
+	url:"/orderHistoryEdit",
+	views : {
+		"menuContent":{
+			templateUrl :"templates/orderHistoryEdit.html",
+			controller:"orderHistoryEditCtrl"
+		}
+	}
 }).state('app.tabs.cart',{
 	cache:false,
 	url:"/cart",
@@ -227,6 +181,15 @@ function($stateProvider, $urlRouterProvider,$ionicConfigProvider) {
 		"tab-admin":{
 			templateUrl :"templates/admin.html",
 			controller:"adminCtrl"
+		}
+	}
+}).state('app.takeaway.takeawayList',{
+	cache:false,
+	url:"/takeawayList",
+	views : {
+		"takeaway-takeawayList":{
+			templateUrl :"templates/takeaway/takeawaylist.html",
+			controller:"takeawayCtrl"
 		}
 	}
 });
