@@ -1,8 +1,10 @@
 
-<ion-view view-title="Modifier Commandes">
+<ion-view view-title="Modifier T-{{selectedTableId}}">
+  <ion-nav-buttons side="left">
+    <a href="#/app/tabs/orderHistory" class="button button-light "><i class="ion ion-arrow-left-c"></i> Annuler</a>
+  </ion-nav-buttons>
   <ion-nav-buttons side="right">
-    <!-- <button class="button button-icon ion-ios-checkmark-empty ">save</button> -->
-    <a href="#/app/tabs/orderHistory" class="button button-assertive "><i class="ion ion-checkmark"></i> Enregistrer</a>
+  <button class="button  button-assertive " ng-click="openModal()"><i class="ion-checkmark"></i> Modifier</button>
   </ion-nav-buttons>
 
   <ion-content>
@@ -23,7 +25,7 @@
         <div class=" ">
             <span class="badge badge-assertive" ng-hide="newCount[index]-item.count ==0">{{newCount[index]-item.count | numberExpress}}</span>
 
-          <button class="button icon ion-ios-minus" ng-click="subtractCount({{index}})"></button>
+          <button class="button icon ion-ios-minus " ng-click="subtractCount({{index}})"></button>
           <div class="productCount" id="productCount{{product.id}}">
             <input  ng-model="newCount[index]" name="count" >
           </div>

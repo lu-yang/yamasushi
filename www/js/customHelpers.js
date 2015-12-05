@@ -13,13 +13,13 @@ angular.module('customHelpers',[])
 		},
 		alertHelper: function($content){
 			var alertPopup = $ionicPopup.alert({
-				title: '提示',
+				title: 'Notification:',
 				template: $content
 			});
 		},
 		redirectAlertHelper: function($content,$url){
 			var alertPopup = $ionicPopup.alert({
-				title: '提示',
+				title: 'Notification:',
 				template: $content
 			});
 			alertPopup.then(function(res) {
@@ -42,6 +42,18 @@ angular.module('customHelpers',[])
 				}else {
 
 				}
+			});
+		},
+		alertConfirmModify : function ($content){
+			var confirmPopup = $ionicPopup.confirm({
+				title : 'Modifier commandes',
+				template : $content,
+				cancelText: '<i class="ion-close-circled"></i> non',
+			  okText: '<i class="ion-checkmark-circled"></i> oui',
+				okType: 'button-assertive'
+			});
+			confirmPopup.then(function(res){
+
 			});
 		},
 		loadingShow : function (){

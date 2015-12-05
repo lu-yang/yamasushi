@@ -7,13 +7,12 @@ angular.module('starter.controllers')
 		GET.url = baseUrl + 'availableTables';
 		$http(GET).success(function(data) {
 			if (!data.list || data.list.length == 0) {
-				alert("没有桌子信息");
+				$helpers.alertHelper("没有桌子信息");
 				$scope.tableList = null;
 				return;
 			}
 			var list = data.list;
 			$scope.tableList = list;
-			console.log(list);
 			// Stop the ion-refresher from spinning
 			$scope.$broadcast('scroll.refreshComplete');
 		}).error(function(data) {

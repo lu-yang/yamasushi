@@ -1,0 +1,23 @@
+
+<ion-modal-view class="mymodal">
+  <ion-header-bar>
+    <h1 class="title">Liste à modifier</h1>
+    <button class="button  button-dark closeBtn" ng-click="closeModal()"><i class="icon ion-close-circled"></i></button>
+  </ion-header-bar>
+  <ion-content>
+    <h4 class="padding-left"> <i class="ion ion-printer"></i> coché pour imprimer un ticket</h4>
+    <ul class="list">
+      <li class="item item-checkbox" ng-repeat = "(index,item) in orders" ng-hide = "(newCount[index]-orders[index].count) ==0">
+        <label class="checkbox">
+          <input type="checkbox">
+        </label>
+        <h3>{{item.product.productName}}</h3>
+        <h4 class="assertive">{{item.category.name}}</h4>
+        <span class="badge badge-assertive" >{{newCount[index]-item.count | numberExpress}}</span>
+      </li>
+    </ul>
+    <button class="button button-full button-assertive" ng-click="changeOrders()">
+  Modifier
+</button>
+  </ion-content>
+</ion-modal-view>

@@ -60,7 +60,7 @@ angular.module('starter.controllers')
 		$scope.checkoutActionSheet = function (){
 
 			var confirmPopup = $ionicPopup.confirm({
-				title: 'Check-Out / 结账',
+				title: 'Payer',
 				template: 'Vous êtes sûre ?'
 			});
 			confirmPopup.then(function(res) {
@@ -71,7 +71,7 @@ angular.module('starter.controllers')
 						window.localStorage.setItem('cartData-'+$scope.selectedTableId, null);
 						window.localStorage.setItem('selectedTableId', null);
 						window.localStorage.setItem('turnoverId', null);
-						$helpers.checkoutAlertHelper('清台成功');
+						$helpers.checkoutAlertHelper('Payé avec succée');
 					})
 				} else {
 
@@ -81,14 +81,14 @@ angular.module('starter.controllers')
 
 		$scope.printReceiptActionSheet = function(){
 			var confirmPopup = $ionicPopup.confirm({
-				title: 'Receipt / 结账单',
+				title: 'Reçu',
 				template: 'Imprimer ?'
 			});
 			confirmPopup.then(function(res) {
 				if(res) {
 					GET.url = baseUrl + 'printOrders/fr/'+$scope.turnoverId ;
 					$http(GET).success(function(data){
-						$helpers.alertHelper('打印成功');
+						$helpers.alertHelper('Imprimé');
 					})
 				} else {
 

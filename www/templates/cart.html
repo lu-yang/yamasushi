@@ -20,9 +20,10 @@
 
 
         <img ng-src="{{ item.productInfo.thumb }}">
-        <h2>{{ item.productInfo.productName }} <small ng-show = "item.orderAttributions">({{item.productInfo.attrName}})</small></h2>
-        <h3>{{item.productInfo.categoryName}}</h3>
-        <p><b>qté : {{item.count}}</b></p>
+        <h3>{{ item.productInfo.productName }} <small ng-show = "item.orderAttributions">({{item.productInfo.attrName}})</small></h3>
+        <h4 class="assertive">{{item.productInfo.categoryName}}</h4>
+      
+        <span class="badge badge-assertive">{{item.count}}</span>
         <p ng-hide = "item.orderAttributions"><b>Prix : {{item.productInfo.productPrice/100 | currency:'€ '}}</b></p>
         <p ng-show = "item.orderAttributions"><b>Prix : {{(item.productInfo.productPrice+item.productInfo.attrPrice)/100 | currency:'€ '}}</b></p>
 

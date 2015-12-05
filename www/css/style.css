@@ -1,6 +1,8 @@
 /* Empty. Add your own CSS if you like */
 .loading .spinner{ stroke:#fff;}
+
 .item .badge{top:27px;}
+.mymodal .item .badge{top:15px;}
 .bar-footer{
   height:auto;
 }

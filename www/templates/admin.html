@@ -1,28 +1,32 @@
-<ion-view view-title="管理 当前桌 T-{{selectedTableId}}">
+<ion-view view-title="Compte: T-{{selectedTableId}}">
   <ion-content>
     <ion-refresher
-  pulling-text="下拉更新..."
+  pulling-text="recharge en cours..."
   on-refresh="doRefresh()">
 </ion-refresher>
 <ul class="list">
   <li class="item">
-    Numéro de table : T-{{selectedTableId}}
+    N&deg; de table : T-{{selectedTableId}}
   </li>
   <li class="item">
-    Update : {{lastActivity | date:'short'}}
+    Update : {{lastActivity | date:'H:mm ( d-MMM-yy )'}}
   </li>
     <li class="item">
-      l'état : <span ng-show="checkStatus == false">ouvert</span>
+      État : <span ng-show="checkStatus == false" class="assertive">Occupé</span>
     </li>
     <li class="item">
-      L'addition : {{totalPrice}} €
+      Total : {{totalPrice}} €
     </li>
 </ul>
 <button class="button button-block button-dark" ng-click="printReceiptActionSheet()">
-Print Ticket
+<i class="ion ion-printer"></i> Print Ticket
+</button>
+<hr>
+<button class="button button-block button-dark" ng-click="checkoutActionSheet()">
+<i class="ion ion-cash"></i> Payment (Cash)
 </button>
 <button class="button button-block button-dark" ng-click="checkoutActionSheet()">
-Check-Out
+<i class="ion ion-card"></i> Payment (Carte)
 </button>
   </ion-content>
 </ion-view>

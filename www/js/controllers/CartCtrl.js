@@ -74,11 +74,9 @@ angular.module('starter.controllers')
         key: 0
       };
     }
-    $scope.cart = JSON.parse($localStorage.get('cartData-'+$scope.selectedTableId));
-
+    $scope.cart = angular.fromJson($localStorage.get('cartData-'+$scope.selectedTableId));
   };
   $scope.closeModal = function() {
-    $scope.removeItem(1);
     $scope.modal.hide();
   };
 
@@ -152,9 +150,7 @@ angular.module('starter.controllers')
     var list = data.list;
     for (var i = 0; i < list.length; ++i) {
       var thumb = list[i].product.thumb;
-
       list[i].product.thumb = convertImageURL(thumb);
-
     }
     $scope.orders = list;
   }).error(function(data) {
@@ -167,7 +163,7 @@ angular.module('starter.controllers')
   }
 
 })
-.controller('orderHistoryEditCtrl',function($scope,$http,$stateParams,$localStorage,$helpers){
+.controller('orderHistoryEditCtrl',function($scope,$http,$stateParams,$localStorage,$helpers,$ionicModal){
   $scope.turnoverId = $localStorage.get('turnoverId');
   $scope.selectedTableId = 	$localStorage.get('selectedTableId');
   $scope.checkTurnoverHealth($scope.turnoverId);
@@ -183,9 +179,7 @@ angular.module('starter.controllers')
     var list = data.list;
     for (var i = 0; i < list.length; ++i) {
       var thumb = list[i].product.thumb;
-
       list[i].product.thumb = convertImageURL(thumb);
-
     }
     $scope.orders = list;
     newCount = [];
@@ -210,9 +204,51 @@ angular.module('starter.controllers')
     }
   }
 
+  $scope.changeOrders = function(){
+    data = [];
+    for (var i = 0; i < $scope.orders.length; i++) {
+      data[i] = $scope.newCount[i]-$scope.orders[i].count;
+    }
+    console.log(data);
+    // $helpers.alertConfirmModify('appliquer les modifications ?');
+  }
+
+  $scope.sendOrders = function(){
+  }
+
+  $ionicModal.fromTemplateUrl('templates/modalTpls/orderHistoryEdit.html', {
+    scope: $scope,
+    animation: 'slide-in-up'
+  }).then(function(modal) {
+    $scope.modal = modal;
+  });
+
+  $scope.openModal = function() {
+    if($scope.getTotal() ==0 ){
+      $helpers.alertHelper('rien à changer');
+    }else{
+      $scope.modal.show();
+    }
+  };
+  $scope.closeModal = function() {
+    $scope.modal.hide();
+  };
+
+  $scope.getTotal = function(){
+    var total = 0;
+    for(var i = 0; i < $scope.newCount.length; i++){
+      if($scope.newCount[i]-$scope.orders[i].count>0){
+        total += $scope.newCount[i]-$scope.orders[i].count;
+      }else{
+        total += (-1)*($scope.newCount[i]-$scope.orders[i].count);
+      }
+    }
+    return total;
+  }
+
 })
 
-.controller('cartCtrl',function($scope,$http,$ionicPopup,$filter,$localStorage,$helpers){
+.controller('cartCtrl',function($scope,$http,$ionicPopup,$filter,$localStorage,$helpers,$state){
   $scope.selectedTableId = $localStorage.get('selectedTableId');
   $scope.turnoverId = $localStorage.get('turnoverId');
   $scope.checkTurnoverHealth($scope.turnoverId);
@@ -226,6 +262,7 @@ angular.module('starter.controllers')
 
   $scope.removeItem = function(index) {
     $scope.cartData.splice(index, 1);
+    $state.go($state.current, {}, {reload: true});
   };
 
   $scope.removeAll = function(){
