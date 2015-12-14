@@ -1,5 +1,5 @@
-angular.module('customHelpers',[])
-.factory('$helpers',['$ionicPopup','$state','$ionicLoading',function($ionicPopup,$state,$ionicLoading,$scope){
+angular.module('customHelpers',['ngResource' ])
+.factory('$helpers',['$ionicPopup','$state','$ionicLoading','$resource',function($ionicPopup,$state,$ionicLoading,$scope){
 	return {
 		checkoutAlertHelper: function($content){
 			var alertPopup = $ionicPopup.alert({
@@ -49,16 +49,11 @@ angular.module('customHelpers',[])
 				title : 'Modifier commandes',
 				template : $content,
 				cancelText: '<i class="ion-close-circled"></i> non',
-			  okText: '<i class="ion-checkmark-circled"></i> oui',
+				okText: '<i class="ion-checkmark-circled"></i> oui',
 				okType: 'button-assertive'
 			});
 			confirmPopup.then(function(res){
-				if($scope.dataToPrint != false){
-					console.log($scope.dataToPrint);
-					}
-					if($scope.dataNotToPrint !=false){
-					console.log($scope.dataNotToPrint);
-					}
+
 			});
 		},
 		loadingShow : function (){
@@ -71,4 +66,12 @@ angular.module('customHelpers',[])
 		}
 	}
 
+}])
+
+.factory('$orderHelpers',['$ionicPopup','$state','$ionicLoading','$http','$helpers','$resource',function($ionicPopup,$state,$ionicLoading,$scope,$http,$helpers,$resource){
+	return {
+		updateOrder : function ($scope){
+
+		}
+	}
 }]);

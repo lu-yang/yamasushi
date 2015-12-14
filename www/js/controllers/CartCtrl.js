@@ -177,7 +177,7 @@ angular.module('starter.controllers')
   }
 
 })
-.controller('orderHistoryEditCtrl',function($scope,$http,$stateParams,$localStorage,$helpers,$ionicModal,$filter){
+.controller('orderHistoryEditCtrl',function($scope,$http,$stateParams,$localStorage,$helpers,$ionicModal,$filter,$orderHelpers,$ionicPopup){
   $scope.turnoverId = $localStorage.get('turnoverId');
   $scope.selectedTableId = 	$localStorage.get('selectedTableId');
   $scope.checkTurnoverHealth($scope.turnoverId);
@@ -275,8 +275,46 @@ angular.module('starter.controllers')
 
     $scope.dataToPrint = dataToPrint;
     $scope.dataNotToPrint = dataNotToPrint;
+    var confirmPopup = $ionicPopup.confirm({
+      title : 'Modifier commandes',
+      template : 'appliquer les modifications ?',
+      cancelText: '<i class="ion-close-circled"></i> non',
+      okText: '<i class="ion-checkmark-circled"></i> oui',
+      okType: 'button-assertive'
+    });
+    confirmPopup.then(function(res){
+      $helpers.loadingShow();
+      if($scope.dataToPrint != false && $scope.dataNotToPrint ==false){
+        POST.url = baseUrl + 'orders/' + $scope.turnoverId + '/true' ;
+        POST.data = $scope.dataToPrint;
+        $http(POST).success(function(data){
+          $scope.modal.hide();
+          $helpers.loadingHide();
+          $helpers.redirectAlertHelper('modification succée', '/tabs/orderHistory');
+        })
+      }else if($scope.dataNotToPrint !=false && $scope.dataToPrint == false){
+        POST.url = baseUrl + 'orders/' + $scope.turnoverId + '/false' ;
+        POST.data = $scope.dataNotToPrint;
+        $http(POST).success(function(data){
+          $scope.modal.hide();
+          $helpers.loadingHide();
+          $helpers.redirectAlertHelper('modification succée', '/tabs/orderHistory');
+        })
+      }else if($scope.dataNotToPrint !=false && $scope.dataToPrint != false){
+        POST.url = baseUrl + 'orders/' + $scope.turnoverId + '/true' ;
+        POST.data = $scope.dataToPrint;
+        $http(POST).success(function(data){
+          POST.url = baseUrl + 'orders/' + $scope.turnoverId + '/false' ;
+          POST.data = $scope.dataNotToPrint;
+          $http(POST).success(function(data){
+            $scope.modal.hide();
+            $helpers.loadingHide();
+            $helpers.redirectAlertHelper('modification succée', '/tabs/orderHistory');
+          })
+        })
+      }
+    });
 
-    $helpers.alertConfirmModify('appliquer les modifications ?',$scope);
   }
 
   $scope.sendOrders = function(){
@@ -298,8 +336,6 @@ angular.module('starter.controllers')
         checkboxModel[i] = false;
       }
       $scope.checkboxModel = checkboxModel;
-      console.log($scope.checkboxModel);
-      console.log($scope.orders);
       $scope.modal.show();
     }
   };

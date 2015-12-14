@@ -8,12 +8,14 @@
     <h4 class="padding-left"> <i class="ion ion-printer"></i> coché pour imprimer un ticket</h4>
     <ul class="list">
       <li class="item item-checkbox" ng-repeat = "(index,item) in orders" ng-hide = "(newCount[index]-orders[index].count) ==0">
-        <label class="checkbox">
-          <input type="checkbox" ng-model="checkboxModel[index]" >
+
+        <label class="checkbox" ng-show="{{item.status != 0}}">
+          <input type="checkbox" ng-model="checkboxModel[index]"  >
         </label>
         <h3>{{item.product.productName}}</h3>
         <h4 class="assertive">{{item.category.name}}</h4>
-        <span class="badge badge-assertive" >{{newCount[index]-item.count | numberExpress}}</span>
+        <span class="badge badge-assertive" ng-show="{{item.status != 0}}">{{newCount[index]-item.count | numberExpress}}</span>
+        <span class="badge badge-stable" ng-show="{{item.status == 0}}">{{newCount[index]-item.count | numberExpress}}</span>
       </li>
     </ul>
     <button class="button button-full button-assertive" ng-click="changeOrders()">
