@@ -3,6 +3,8 @@
 
 .item .badge{top:27px;}
 .mymodal .item .badge{top:15px;}
+.tabs-striped.tabs-dark .tab-item .badge{opacity: 1;}
+.list:last-child.card{margin-bottom: 0px;}
 .bar-footer{
   height:auto;
 }

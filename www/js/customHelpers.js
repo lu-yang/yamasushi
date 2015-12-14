@@ -44,7 +44,7 @@ angular.module('customHelpers',[])
 				}
 			});
 		},
-		alertConfirmModify : function ($content){
+		alertConfirmModify : function ($content,$scope){
 			var confirmPopup = $ionicPopup.confirm({
 				title : 'Modifier commandes',
 				template : $content,
@@ -53,7 +53,12 @@ angular.module('customHelpers',[])
 				okType: 'button-assertive'
 			});
 			confirmPopup.then(function(res){
-
+				if($scope.dataToPrint != false){
+					console.log($scope.dataToPrint);
+					}
+					if($scope.dataNotToPrint !=false){
+					console.log($scope.dataNotToPrint);
+					}
 			});
 		},
 		loadingShow : function (){

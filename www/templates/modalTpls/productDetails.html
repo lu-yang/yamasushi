@@ -30,23 +30,26 @@
         <button class="button button-positive" ng-click="onSubmit()"><i class="icon ion-android-cart"></i> Ajouter</button>
       </div>
 
-      <!-- attributions -->
-      <div class="item item-divider" ng-show = "product.attributions">
-        Options
-      </div>
-      <div class="item item-text-wrap" ng-show = "product.attributions">
-        <div class="list">
-        <label class="item item-radio " ng-repeat = "(key , attr) in product.attributions">
-          <input type="radio" name="group" ng-model = "attrValue.key" ng-value="{{key}}">
-          <div class="item-content">
-            <span class="pull-left">{{attr.attributionName}}</span><span class="pull-right">{{attr.attributionPrice/100 | currency : "€"}}</span>
-            <div class="clearfix"></div>
-          </div>
-          <i class="radio-icon ion-checkmark"></i>
-        </label>
+      <div class="attributions" ng-show = "product.attributionGroups" ng-repeat = "(key , attrGroup) in product.attributionGroups">
+        <!-- attributions -->
+        <div class="item item-divider" >
+          {{attrGroup.attributionGroupName}}
+        </div>
+        <div class="item item-text-wrap" >
+          <div class="list">
+          <label class="item item-radio " ng-repeat = "(key , attr) in attrGroup.attributions">
+            <input type="radio" name="group" ng-model = "attrValue.key" ng-value="{{key}}">
+            <div class="item-content">
+              <span class="pull-left">{{attr.attributionName}}</span><span class="pull-right">{{attr.attributionPrice/100 | currency : "€"}}</span>
+              <div class="clearfix"></div>
+            </div>
+            <i class="radio-icon ion-checkmark"></i>
+          </label>
 
+        </div>
+        </div>
       </div>
-      </div>
+
     </div>
 
 

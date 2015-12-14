@@ -20,3 +20,29 @@ data eg: { "tableID" : tableID }
 Change turnover status (POST)
 url : baseUrl + 'turnover'
 data eg: { "id" : id, "checkout" : true, "tableId" : tableID }
+
+
+Take order (POST)
+url : baseUrl + 'orders/' + turnoverId + '/' + (true/false for print)
+data eg:
+[{  
+	"count": 1,
+	"product": {
+		"id": 100,
+		"categoryId": 16
+	},
+	"orderAttributions": null
+}]
+
+Change order (POST)
+url : baseUrl + 'orders/' + turnoverId + '/' + (true/false for print)
+data eg:
+[{
+    "id": 888,
+	"count": -1,
+	"product": {
+		"id": 100,
+		"categoryId": 16
+	},
+	"orderAttributions": null
+}]

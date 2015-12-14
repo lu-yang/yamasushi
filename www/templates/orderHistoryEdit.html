@@ -14,16 +14,16 @@
     </div>
     <div ng-show="cartData" class="list " style="width: 100%; height: 70%;  overflow: auto;">
 
-      <div href="" ng-repeat="(index,item) in orders" class="item item-thumbnail-left" >
+      <div href="" ng-repeat="(index,item) in orders  | orderBy:'-id'" class="item item-thumbnail-left" >
 
 
         <img ng-src="{{ item.product.thumb }}">
         <small><i class="ion-ios-clock-outline"></i> {{item.created|date :'H:mm'}}</small>
         <h3>{{ item.product.productName }} <small ng-show = "item.orderAttributions">({{item.product.attrName}})</small></h3>
-        <h4 class="assertive">{{item.category.name}}</h4>
+        <h4 class="assertive">{{item.category.name}} </h4>
 
         <div class=" ">
-            <span class="badge badge-assertive" ng-hide="newCount[index]-item.count ==0">{{newCount[index]-item.count | numberExpress}}</span>
+            <span class="badge badge-assertive" >{{newCount[index]-item.count | numberExpress}}</span>
 
           <button class="button icon ion-ios-minus " ng-click="subtractCount({{index}})"></button>
           <div class="productCount" id="productCount{{product.id}}">

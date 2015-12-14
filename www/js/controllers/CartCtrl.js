@@ -1,8 +1,9 @@
 angular.module('starter.controllers')
-.controller('CategoryCtrl',function($scope,$http,$location,$localStorage){
+.controller('CategoryCtrl',function($scope,$http,$location,$localStorage,$helpers){
   $scope.selectedTableId = $localStorage.get('selectedTableId');
   $scope.turnoverId = $localStorage.get('turnoverId');
   $scope.checkTurnoverHealth($scope.turnoverId);
+  $helpers.loadingShow();
   GET.url = baseUrl + 'categories/' + locale + '/' + 1;
 
   $http(GET).success(function(data) {
@@ -17,10 +18,16 @@ angular.module('starter.controllers')
       list[i].thumb = convertCatImageURL(thumb);
     }
     $scope.category = list;
+    $helpers.loadingHide();
+
   }).error(function(data) {
     alert(data);
   });
 
+  $scope.viewType = $localStorage.getObject('viewType');
+  $scope.viewTypeChange = function() {
+     $localStorage.setObject("viewType",{checked:$scope.viewType.checked });
+  };
 })
 .controller('ProductListCtrl',function($scope,$http,$stateParams, $ionicModal,$localStorage,$helpers){
   $scope.selectedTableId = $localStorage.get('selectedTableId');
@@ -28,6 +35,7 @@ angular.module('starter.controllers')
   $scope.checkTurnoverHealth($scope.turnoverId);
   $scope.categoryId = $stateParams.categoryId;
   $scope.categoryName = $stateParams.categoryName;
+
   if($localStorage.get('cartData-'+$scope.selectedTableId)){
     cartData = $localStorage.get('cartData-'+$scope.selectedTableId);
     $scope.cart = JSON.parse(cartData);
@@ -48,11 +56,17 @@ angular.module('starter.controllers')
     }
 
     $scope.productList = list;
+
   }).error(function(data) {
     alert(data);
   });
 
-  $ionicModal.fromTemplateUrl('templates/productDetails.html', {
+  $scope.viewType = $localStorage.getObject('viewType');
+  $scope.viewTypeChange = function() {
+     $localStorage.setObject("viewType",{checked:$scope.viewType.checked });
+  };
+
+  $ionicModal.fromTemplateUrl('templates/modalTpls/productDetails.html', {
     scope: $scope,
     animation: 'slide-in-up'
   }).then(function(modal) {
@@ -163,7 +177,7 @@ angular.module('starter.controllers')
   }
 
 })
-.controller('orderHistoryEditCtrl',function($scope,$http,$stateParams,$localStorage,$helpers,$ionicModal){
+.controller('orderHistoryEditCtrl',function($scope,$http,$stateParams,$localStorage,$helpers,$ionicModal,$filter){
   $scope.turnoverId = $localStorage.get('turnoverId');
   $scope.selectedTableId = 	$localStorage.get('selectedTableId');
   $scope.checkTurnoverHealth($scope.turnoverId);
@@ -181,7 +195,9 @@ angular.module('starter.controllers')
       var thumb = list[i].product.thumb;
       list[i].product.thumb = convertImageURL(thumb);
     }
-    $scope.orders = list;
+
+
+    $scope.orders = $filter('orderBy')(list,'-id');
     newCount = [];
     for(i=0;i<$scope.orders.length;i++){
       newCount[i] = $scope.orders[i].count;
@@ -206,11 +222,61 @@ angular.module('starter.controllers')
 
   $scope.changeOrders = function(){
     data = [];
+    dataToPrint = [];
+    dataNotToPrint = [];
     for (var i = 0; i < $scope.orders.length; i++) {
-      data[i] = $scope.newCount[i]-$scope.orders[i].count;
+      data[i] = {id : $scope.orders[i].id, newCount : $scope.newCount[i]-$scope.orders[i].count}
     }
-    console.log(data);
-    // $helpers.alertConfirmModify('appliquer les modifications ?');
+
+    a = $filter('filter')($scope.orders,function(d,i){
+      if($scope.newCount[i]-$scope.orders[i].count !=0 && $scope.checkboxModel[i] == true){
+        return d;
+      }
+    });
+
+    b = $filter('filter')($scope.orders,function(d,i){
+      if($scope.newCount[i]-$scope.orders[i].count !=0 && $scope.checkboxModel[i] == false){
+        return d;
+      }
+    });
+    for (var i = 0; i < a.length; i++) {
+      newCount = $filter('filter')(data,function(d){
+        if( d.id == a[i].id){
+          return d;
+        }
+      });
+      dataToPrint[i] = {
+        "id":a[i].id,
+        "count":newCount[0].newCount,
+        "product": {
+          "id": a[i].product.id,
+          "categoryId": a[i].category.id
+        },
+        "orderAttributions": a[i].orderAttributions
+      } ;
+    }
+
+    for (var i = 0; i < b.length; i++) {
+      newCount = $filter('filter')(data,function(d){
+        if( d.id == b[i].id){
+          return d;
+        }
+      });
+      dataNotToPrint[i] = {
+        "id":b[i].id,
+        "count":newCount[0].newCount,
+        "product": {
+          "id": b[i].product.id,
+          "categoryId": b[i].category.id
+        },
+        "orderAttributions": b[i].orderAttributions
+      } ;
+    }
+
+    $scope.dataToPrint = dataToPrint;
+    $scope.dataNotToPrint = dataNotToPrint;
+
+    $helpers.alertConfirmModify('appliquer les modifications ?',$scope);
   }
 
   $scope.sendOrders = function(){
@@ -227,6 +293,13 @@ angular.module('starter.controllers')
     if($scope.getTotal() ==0 ){
       $helpers.alertHelper('rien à changer');
     }else{
+      checkboxModel = [];
+      for (var i = 0; i < $scope.orders.length; i++) {
+        checkboxModel[i] = false;
+      }
+      $scope.checkboxModel = checkboxModel;
+      console.log($scope.checkboxModel);
+      console.log($scope.orders);
       $scope.modal.show();
     }
   };

@@ -3,7 +3,7 @@ angular.module('starter.controllers')
 	.controller('tableListCtrl',function($scope,$http,$ionicActionSheet,$window,$state,$helpers,$localStorage) {
 		$scope.selectedTableId = $localStorage.get('selectedTableId');
 		$scope.turnoverId = $localStorage.get('turnoverId');
-
+		$helpers.loadingShow();
 		GET.url = baseUrl + 'availableTables';
 		$http(GET).success(function(data) {
 			if (!data.list || data.list.length == 0) {
@@ -13,6 +13,8 @@ angular.module('starter.controllers')
 			}
 			var list = data.list;
 			$scope.tableList = list;
+			console.log($scope.tableList);
+			$helpers.loadingHide();
 			// Stop the ion-refresher from spinning
 			$scope.$broadcast('scroll.refreshComplete');
 		}).error(function(data) {

@@ -9,7 +9,7 @@
     <ul class="list">
       <li class="item item-checkbox" ng-repeat = "(index,item) in orders" ng-hide = "(newCount[index]-orders[index].count) ==0">
         <label class="checkbox">
-          <input type="checkbox">
+          <input type="checkbox" ng-model="checkboxModel[index]" >
         </label>
         <h3>{{item.product.productName}}</h3>
         <h4 class="assertive">{{item.category.name}}</h4>

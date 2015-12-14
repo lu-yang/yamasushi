@@ -26,9 +26,11 @@ app.run(function($ionicPlatform, $localStorage) {
 		// 	// StatusBar.hide();
 		// 	// ionic.Platform.fullScreen();
 		// }
-
+		if(!$localStorage.getObject('viewType')){
+		 $localStorage.setObject('viewType',{checked : false});
+		 }
 	});
-
+	
 
 
 });
@@ -183,16 +185,16 @@ function($stateProvider, $urlRouterProvider,$ionicConfigProvider) {
 			controller:"adminCtrl"
 		}
 	}
-}).state('app.takeaway.takeawayList',{
+}).state('app.takeawayList',{
 	cache:false,
 	url:"/takeawayList",
 	views : {
-		"takeaway-takeawayList":{
+		"menuContent":{
 			templateUrl :"templates/takeaway/takeawaylist.html",
 			controller:"takeawayCtrl"
 		}
 	}
 });
-$urlRouterProvider.otherwise('/app/search');
+$urlRouterProvider.otherwise('/app/tableList');
 
 } ]);
