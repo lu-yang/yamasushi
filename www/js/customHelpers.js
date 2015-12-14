@@ -44,6 +44,21 @@ angular.module('customHelpers',['ngResource' ])
 				}
 			});
 		},
+		alertBeforeDeleleTakeaway : function ($content,$turnoverId){
+			var confirmPopup = $ionicPopup.confirm({
+				title : 'Efface tous',
+				template : $content
+			});
+			confirmPopup.then(function(res){
+				if(res) {
+					cartData = [];
+					window.localStorage.setItem('cartDataT-'+$turnoverId, cartData);
+					$state.go($state.current, {}, {reload: true});
+				}else {
+
+				}
+			});
+		},
 		alertConfirmModify : function ($content,$scope){
 			var confirmPopup = $ionicPopup.confirm({
 				title : 'Modifier commandes',

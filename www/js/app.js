@@ -27,10 +27,10 @@ app.run(function($ionicPlatform, $localStorage) {
 		// 	// ionic.Platform.fullScreen();
 		// }
 		if(!$localStorage.getObject('viewType')){
-		 $localStorage.setObject('viewType',{checked : false});
-		 }
+			$localStorage.setObject('viewType',{checked : false});
+		}
 	});
-	
+
 
 
 });
@@ -126,6 +126,66 @@ function($stateProvider, $urlRouterProvider,$ionicConfigProvider) {
 		}
 	}
 
+}).state('app.takeawayList',{
+	url:"/takeawayList",
+	views : {
+		"menuContent":{
+			templateUrl :"templates/takeaway/takeawayList.html",
+			controller:"TakeawayListCtrl"
+		}
+	}
+}).state('app.takeaways',{
+	url:"/takeaways",
+	views : {
+		"menuContent":{
+			templateUrl :"templates/takeaway/tabs.html"
+		}
+	}
+}).state('app.takeaways.orderHistory',{
+	cache:false,
+	url:"/orderHistory",
+	views : {
+		"takeaway-orderHistory":{
+			templateUrl :"templates/takeaway/orderHistory.html",
+			controller:"takeawayOrderHistoryCtrl"
+		}
+	}
+}).state('app.takeaways.category',{
+	cache:false,
+	url:"/category",
+	views : {
+		"takeaway-category":{
+			templateUrl :"templates/takeaway/category.html",
+			controller:"takeawayCategoryCtrl"
+		}
+	}
+}).state('app.takeaways.productList',{
+	cache:false,
+	url:"/product/:categoryId/:categoryName",
+	views : {
+		"takeaway-category":{
+			templateUrl :"templates/takeaway/productList.html",
+			controller:"takeawayProductListCtrl"
+		}
+	}
+}).state('app.takeaways.cart',{
+	cache:false,
+	url:"/cart",
+	views : {
+		"takeaway-cart":{
+			templateUrl :"templates/takeaway/cart.html",
+			controller:"takeawayCartCtrl"
+		}
+	}
+}).state('app.takeaways.admin',{
+	cache:false,
+	url:"/admin",
+	views : {
+		"takeaway-admin":{
+			templateUrl :"templates/takeaway/admin.html",
+			controller:"takeawayAdminCtrl"
+		}
+	}
 }).state('app.tabs',{
 	url:"/tabs",
 	views : {
@@ -183,15 +243,6 @@ function($stateProvider, $urlRouterProvider,$ionicConfigProvider) {
 		"tab-admin":{
 			templateUrl :"templates/admin.html",
 			controller:"adminCtrl"
-		}
-	}
-}).state('app.takeawayList',{
-	cache:false,
-	url:"/takeawayList",
-	views : {
-		"menuContent":{
-			templateUrl :"templates/takeaway/takeawaylist.html",
-			controller:"takeawayCtrl"
 		}
 	}
 });

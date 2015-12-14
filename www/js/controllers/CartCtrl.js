@@ -283,27 +283,17 @@ angular.module('starter.controllers')
       okType: 'button-assertive'
     });
     confirmPopup.then(function(res){
-      $helpers.loadingShow();
-      if($scope.dataToPrint != false && $scope.dataNotToPrint ==false){
-        POST.url = baseUrl + 'orders/' + $scope.turnoverId + '/true' ;
-        POST.data = $scope.dataToPrint;
-        $http(POST).success(function(data){
-          $scope.modal.hide();
-          $helpers.loadingHide();
-          $helpers.redirectAlertHelper('modification succée', '/tabs/orderHistory');
-        })
-      }else if($scope.dataNotToPrint !=false && $scope.dataToPrint == false){
-        POST.url = baseUrl + 'orders/' + $scope.turnoverId + '/false' ;
-        POST.data = $scope.dataNotToPrint;
-        $http(POST).success(function(data){
-          $scope.modal.hide();
-          $helpers.loadingHide();
-          $helpers.redirectAlertHelper('modification succée', '/tabs/orderHistory');
-        })
-      }else if($scope.dataNotToPrint !=false && $scope.dataToPrint != false){
-        POST.url = baseUrl + 'orders/' + $scope.turnoverId + '/true' ;
-        POST.data = $scope.dataToPrint;
-        $http(POST).success(function(data){
+      if(res){
+        $helpers.loadingShow();
+        if($scope.dataToPrint != false && $scope.dataNotToPrint ==false){
+          POST.url = baseUrl + 'orders/' + $scope.turnoverId + '/true' ;
+          POST.data = $scope.dataToPrint;
+          $http(POST).success(function(data){
+            $scope.modal.hide();
+            $helpers.loadingHide();
+            $helpers.redirectAlertHelper('modification succée', '/tabs/orderHistory');
+          })
+        }else if($scope.dataNotToPrint !=false && $scope.dataToPrint == false){
           POST.url = baseUrl + 'orders/' + $scope.turnoverId + '/false' ;
           POST.data = $scope.dataNotToPrint;
           $http(POST).success(function(data){
@@ -311,7 +301,19 @@ angular.module('starter.controllers')
             $helpers.loadingHide();
             $helpers.redirectAlertHelper('modification succée', '/tabs/orderHistory');
           })
-        })
+        }else if($scope.dataNotToPrint !=false && $scope.dataToPrint != false){
+          POST.url = baseUrl + 'orders/' + $scope.turnoverId + '/true' ;
+          POST.data = $scope.dataToPrint;
+          $http(POST).success(function(data){
+            POST.url = baseUrl + 'orders/' + $scope.turnoverId + '/false' ;
+            POST.data = $scope.dataNotToPrint;
+            $http(POST).success(function(data){
+              $scope.modal.hide();
+              $helpers.loadingHide();
+              $helpers.redirectAlertHelper('modification succée', '/tabs/orderHistory');
+            })
+          })
+        }
       }
     });
 

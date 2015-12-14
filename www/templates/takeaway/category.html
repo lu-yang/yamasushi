@@ -1,0 +1,45 @@
+<ion-view view-title="Carte de menu">
+  <ion-nav-buttons side="right">
+    <label class="toggle">
+      <input type="checkbox" ng-model="viewType.checked"  ng-change="viewTypeChange()">
+      <div class="track">
+        <div class="handle"></div>
+      </div>
+    </ion-nav-buttons>
+
+  </label>
+  <ion-content>
+    <div class="list " style="width: 100%; height: 70%;  overflow: auto;" ng-show = "viewType.checked == false">
+      <a  href="#/app/takeaways/product/{{item.id}}/{{item.name}}" ng-repeat="item in category" class="item item-thumbnail-left">
+        <img ng-src="{{ item.thumb }}">
+        <h2> {{ item.name }}</h2>
+      </a>
+    </div>
+
+    <div ng-repeat="item in category" ng-show = "viewType.checked == true">
+        <div class="row" ng-if="$even">
+          <div class="col col-50 " >
+            <div class="list card ">
+              <div class="item item-image">
+                <img ng-src="{{ category[$index+0].thumb }}">
+              </div>
+              <a class="item assertive" href="#/app/takeaways/product/{{category[$index+0].id}}/{{category[$index+0].name}}">
+                {{ category[$index+0].name }}
+              </a>
+            </div>
+          </div>
+          <div class="col col-50">
+            <div class="list card">
+              <div class="item item-image">
+                <img ng-src="{{ category[$index+1].thumb }}">
+              </div>
+              <a class="item assertive" href="#/app/takeaways/product/{{category[$index+1].id}}/{{category[$index+1].name}}">
+                {{ category[$index+1].name }}
+              </a>
+            </div>
+          </div>
+        </div>
+    </div>
+
+  </ion-content>
+</ion-view>

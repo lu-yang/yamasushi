@@ -1,0 +1,32 @@
+<ion-view view-title="Compte">
+  <ion-content>
+    <ion-refresher
+  pulling-text="recharge en cours..."
+  on-refresh="doRefresh()">
+</ion-refresher>
+<ul class="list">
+  <li class="item">
+    N&deg; de table :
+  </li>
+  <li class="item">
+    Update : {{lastActivity | date:'H:mm ( d-MMM-yy )'}}
+  </li>
+    <li class="item">
+      État : <span ng-show="checkStatus == false" class="assertive">Occupé</span>
+    </li>
+    <li class="item">
+      Total : {{totalPrice}} €
+    </li>
+</ul>
+<button class="button button-block button-dark" ng-click="printReceiptActionSheet()">
+<i class="ion ion-printer"></i> Imprimer Ticket
+</button>
+<hr>
+<button class="button button-block button-dark" ng-click="checkoutActionSheet(0)">
+<i class="ion ion-cash"></i> Paiement (Cash)
+</button>
+<button class="button button-block button-dark" ng-click="checkoutActionSheet(1)">
+<i class="ion ion-card"></i> Paiement (Carte)
+</button>
+  </ion-content>
+</ion-view>

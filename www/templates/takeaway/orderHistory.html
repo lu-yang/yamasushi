@@ -1,0 +1,22 @@
+<ion-view view-title="Historique">
+  <ion-nav-buttons side="right">
+    <button class="button  ion-edit button-positive" ng-click="orderEdit()"> modifier</button>
+  </ion-nav-buttons>
+  <ion-content>
+    <div ng-hide="orders" class="list " style="width: 100%; height: 70%;  overflow: auto;">
+          <h5 class="padding">Il n'y a aucune commande...</h5>
+            </div>
+<div ng-show="orders" class="list " style="width: 100%; height: 70%;  overflow: auto;">
+        <a href=""  ng-repeat="item in orders | orderBy:'-id'" class="item item-thumbnail-left">
+          <img ng-src="{{ item.product.thumb }}">
+          <h3> {{ item.product.productName }} <small ng-show = "item.orderAttributions">( option: {{item.orderAttributions[0].attribution.attributionName}} )</small></h3>
+          <h4 class="assertive">{{item.category.name}}</h4>
+          <span class="badge badge-assertive">{{item.count}}</span>
+          <p ng-hide = "item.orderAttributions"><b>Prix : {{item.product.productPrice/100 | currency:'€ '}}</b></p>
+          <p ng-show = "item.orderAttributions"><b>Prix : {{(item.product.productPrice+item.orderAttributions[0].attribution.attributionPrice)/100 | currency:'€ '}}</b></p>
+          <p ng-hide="item.updated==fasle"><small><i class="ion-ios-clock-outline"></i> {{item.updated | date:'d-MMM-y H:mm'}}</small></p>
+          <p ng-show="item.updated==fasle"><small><i class="ion-ios-clock-outline"></i> {{item.created | date:'d-MMM-y H:mm'}}</small></p>
+        </a>
+        </div>
+  </ion-content>
+</ion-view>

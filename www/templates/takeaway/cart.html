@@ -1,0 +1,42 @@
+
+<ion-view view-title="Commandes en cours">
+  <ion-nav-buttons side="right">
+    <button class="button button-icon button-clear ion-android-sync"></button>
+
+  </ion-nav-buttons>
+  <ion-content>
+
+    <div class="button-bar">
+      <a class="button" ng-click="removeAll()"><i class="ion ion-trash-a"></i> efface tous</a>
+      <a class="button button-positive" ng-click="sendOrders()"><i class="ion ion-fireball"></i> cuisine</a>
+    </div>
+
+    <div ng-hide="cartData" class="list " style="width: 100%; height: 70%;  overflow: auto;">
+      <h4 class="padding"> 0 plats dans la liste...    </h4><i class="fa fa-bars"></i>
+    </div>
+    <div ng-show="cartData" class="list " style="width: 100%; height: 70%;  overflow: auto;">
+
+      <div href="" ng-repeat="(index,item) in cartData" class="item item-thumbnail-left" >
+
+
+        <img ng-src="{{ item.productInfo.thumb }}">
+        <h3>{{ item.productInfo.productName }} <small ng-show = "item.orderAttributions">({{item.productInfo.attrName}})</small></h3>
+        <h4 class="assertive">{{item.productInfo.categoryName}}</h4>
+      
+        <span class="badge badge-assertive">{{item.count}}</span>
+        <p ng-hide = "item.orderAttributions"><b>Prix : {{item.productInfo.productPrice/100 | currency:'€ '}}</b></p>
+        <p ng-show = "item.orderAttributions"><b>Prix : {{(item.productInfo.productPrice+item.productInfo.attrPrice)/100 | currency:'€ '}}</b></p>
+
+        <div class=" ">
+          <button class="button icon ion-ios-minus" ng-click="subtractCount({{index}})"></button>
+          <div class="productCount" id="productCount{{product.id}}">
+            <input  ng-model="item.count" name="count" >
+          </div>
+          <button class="button icon ion-ios-plus" ng-click="addCount({{index}})"></button>
+        </div>
+
+
+      </div>
+    </div>
+  </ion-content>
+</ion-view>

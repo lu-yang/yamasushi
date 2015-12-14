@@ -9,16 +9,15 @@ angular.module('starter.controllers')
 			if (!data.list || data.list.length == 0) {
 				$helpers.alertHelper("没有桌子信息");
 				$scope.tableList = null;
+				$helpers.loadingHide();
 				return;
 			}
 			var list = data.list;
 			$scope.tableList = list;
-			console.log($scope.tableList);
 			$helpers.loadingHide();
-			// Stop the ion-refresher from spinning
-			$scope.$broadcast('scroll.refreshComplete');
+
 		}).error(function(data) {
-			alert(data);
+			$helpers.loadingHide();
 		})
 
 		$scope.doRefresh = function(){
