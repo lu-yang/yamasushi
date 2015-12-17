@@ -1,4 +1,5 @@
 Get server constant (GET)
+-------------------------
 url : baseUrl + 'constant'
 
 Get turnover by turnoverId (GET)
@@ -12,6 +13,13 @@ url : baseUrl + 'extOrders/locale/' + turnoverId
 
 Get all categories (GET)
 url : baseUrl + 'categories/' + locale + '/1'
+
+Get all takeaways by date (GET)
+url : baseUrl + 'takeaways/' + {from} + '/' + {to}
+
+Get takeaway by takeawayId (GET)
+url : baseUrl + 'takeaway/' + {takeawayId}
+
 
 Open table (POST)
 url : baseUrl + 'openTable'
