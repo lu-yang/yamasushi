@@ -11,14 +11,30 @@ angular.module('starter.controllers')
     }
     var list = data.model;
 
-    $scope.takeawayList =  $filter('orderBy')(list,'-turnover.id');
+    $scope.takeawayList =  $filter('orderBy')(list,'turnover.id');
 
     console.log($scope.takeawayList);
     $helpers.loadingHide();
   }).error(function(data) {
     alert(data);
   })
+  GET.url = baseUrl + 'takeaways/2015-01-01/2015-12-17';
+  $http(GET).success(function(data) {
+    // if (!data.model || data.model.length == 0) {
+    //   $helpers.loadingHide();
+    //   $helpers.alertHelper("non emporter");
+    //   $scope.tableList = null;
+    //   return;
+    // }
+    // var list = data.model;
+console.log(data);
+    // $scope.takeawayList =  $filter('orderBy')(list,'turnover.id');
 
+    console.log($scope.takeawayList);
+    $helpers.loadingHide();
+  }).error(function(data) {
+    alert(data);
+  })
   $scope.doRefresh = function(){
     GET.url = baseUrl + 'turnover/all/totalPrice/3';
     $http(GET).success(function(data) {
