@@ -1,36 +1,59 @@
 <ion-view view-title="Liste des Emporter">
   <ion-nav-buttons side="right">
-    <button class="button  ion-plus-circled button-positive" ng-click="newTakeaway()"> nouveau</button>
+    <button class="button  ion-plus-circled button-positive" ng-click="newTakeawayModal()"> nouveau</button>
   </ion-nav-buttons>
   <ion-content>
     <ion-refresher
-    pulling-text="Recharge..."
+    pulling-text="tirer pour rafraîchir"
     on-refresh="doRefresh()">
   </ion-refresher>
   <div ng-hide="takeawayList" class="list " style="width: 100%; height: 70%;  overflow: auto;">
     <h5 class="padding">Il n'y a aucune commande...</h5>
   </div>
 
-    <div class="card" ng-repeat="(index,item) in takeawayList " ng-show = "takeawayList"  ng-click ="checkTableActionSheet({{item.turnover.id}}) ">
-  <div class="item item-divider">
-    <h3 class="pull-left"> Emporter <i class="ion ion-bag"></i> / Livraison <i class="ion ion-home"></i></h3>
-    <div class="pull-right">
-      <i class="ion ion-social-euro-outline" ng-if="item.turnover.checkout == false"></i>
-      <i class="ion ion-social-euro" ng-if="item.turnover.checkout == true"></i>
+  <div class="card" ng-repeat="(index,item) in takeawayList " ng-show = "takeawayList"  ng-click ="checkTableActionSheet({{item.turnover.id}}) ">
+    <div class="item item-divider item-light">
+      <div class="pull-left">
+        <span ng-if="item.source == 1"><i class="ion ion-earth"></i></span>
+        <span ng-if="item.source == 2"><i class="ion ion-ios-telephone"></i></span>
+        <span ng-if="item.source == 3"><i class="ion ion-android-restaurant"></i></span>
+      </div>
+
+      <div class="pull-right">
+        <span class="assertive" ng-if="item.vaild == false"><i class="ion ion-ios-checkmark-outline"></i></span>
+        <span class="assertive" ng-if="item.vaild == true"><i class="ion ion-ios-checkmark"></i></span>
+        <span class="assertive" ng-if="item.printed == false"><i class="ion ion-ios-printer-outline"></i></span>
+        <span class="assertive" ng-if="item.printed == true"><i class="ion ion-ios-printer"></i></span>
+        <span class="assertive" ng-if="item.turnover.checkout == false"><i class="ion ion-social-euro-outline"></i></span>
+        <span class="assertive" ng-if="item.turnover.checkout == true"><i class="ion ion-social-euro"></i></span>
+      </div>
+    </div>
+    <div class="item item-text-wrap">
+
+      <div class="pull-left">
+        <h2 ng-if="item.delivery == false"><i class="ion ion-bag"></i> Emporter </h2>
+        <h2 ng-if="item.delivery == true"><i class="ion ion-ios-home"></i>  Livraison </h2>
+      </div>
+      <div class="pull-right">
+        <h2 ng-if="item.delivery == false">{{item.deliveryTimestamp | date:"HH:mm"}}</h2>
+        <h2 ng-if="item.delivery == true">{{item.deliveryTimestamp | date:"HH:mm"}}</h2>
+      </div>
+      <div class="clearfix"></div>
+    </div>
+    <div class="item item-divider item-dark">
+      <div class="pull-left">
+        <small>Total : {{item.total/100 | currency : "€"}}</small>
+      </div>
+      <div class="pull-right">
+        <small>
+          Crée:
+          <i class="ion ion-calendar"></i> <small ng-if="item.turnover.updated">{{item.turnover.updated | date :"dd-MMM-yy"}}</small><small ng-if="item.turnover.updated == null">{{item.created | date :"dd-MMM-yy"}}</small>
+          <i class="ion ion-clock"></i> <small ng-if="item.turnover.updated">{{item.turnover.updated | date :"HH:mm"}}</small><small ng-if="item.turnover.updated == null">{{item.created | date :"HH:mm"}}</small>
+        </small>
+      </div>
 
     </div>
   </div>
-  <div class="item item-text-wrap">
-    Total : {{item.total | currency : "€"}}
-  </div>
-  <div class="item item-divider item-light">
-    <div class="pull-right">
-      <i class="ion ion-calendar"></i> <small ng-if="item.turnover.updated">{{item.turnover.updated | date :"dd-MMM-yy"}}</small><small ng-if="item.turnover.updated == null">{{item.turnover.created | date :"dd-MMM-yy"}}</small>
-      <i class="ion ion-clock"></i> <small ng-if="item.turnover.updated">{{item.turnover.updated | date :"hh:mm"}}</small><small ng-if="item.turnover.updated == null">{{item.turnover.created | date :"hh:mm"}}</small>
-    </div>
-
-  </div>
-</div>
 
 
 

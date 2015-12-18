@@ -1,51 +1,34 @@
 angular.module('starter.controllers')
-.controller('TakeawayListCtrl',function($scope,$http,$helpers,$ionicActionSheet,$localStorage,$window,$filter){
+.controller('TakeawayListCtrl',function($scope,$http,$helpers,$ionicActionSheet,$ionicModal,$localStorage,$window,$filter){
   $helpers.loadingShow();
-  GET.url = baseUrl + 'turnover/all/totalPrice/3';
-  $http(GET).success(function(data) {
-    if (!data.model || data.model.length == 0) {
-      $helpers.loadingHide();
-      $helpers.alertHelper("non emporter");
-      $scope.tableList = null;
-      return;
-    }
-    var list = data.model;
 
-    $scope.takeawayList =  $filter('orderBy')(list,'turnover.id');
-
-    console.log($scope.takeawayList);
-    $helpers.loadingHide();
-  }).error(function(data) {
-    alert(data);
-  })
   GET.url = baseUrl + 'takeaways/2015-01-01/2015-12-17';
   $http(GET).success(function(data) {
-    // if (!data.model || data.model.length == 0) {
-    //   $helpers.loadingHide();
-    //   $helpers.alertHelper("non emporter");
-    //   $scope.tableList = null;
-    //   return;
-    // }
-    // var list = data.model;
-console.log(data);
-    // $scope.takeawayList =  $filter('orderBy')(list,'turnover.id');
+    if (!data.list || data.list.length == 0) {
+      $helpers.loadingHide();
+      $helpers.alertHelper("non emporter");
+      return;
+    }
+    var list = data.list;
+     $scope.takeawayList =  $filter('orderBy')(list,'deliveryTimestamp');
 
-    console.log($scope.takeawayList);
+     console.log($scope.takeawayList);
     $helpers.loadingHide();
   }).error(function(data) {
     alert(data);
+    $helpers.loadingHide();
   })
+
   $scope.doRefresh = function(){
-    GET.url = baseUrl + 'turnover/all/totalPrice/3';
+    GET.url = baseUrl + 'takeaways/2015-01-01/2015-12-17';
     $http(GET).success(function(data) {
-      if (!data.model || data.model.length == 0) {
+      if (!data.list || data.list.length == 0) {
         $helpers.loadingHide();
         $helpers.alertHelper("non emporter");
-        $scope.tableList = null;
         return;
       }
-      var list = data.model;
-      $scope.takeawayList = list;
+      var list = data.list;
+      $scope.takeawayList =  $filter('orderBy')(list,'deliveryTimestamp');
       // Stop the ion-refresher from spinning
       $scope.$broadcast('scroll.refreshComplete');
     }).error(function(data) {
@@ -76,14 +59,26 @@ console.log(data);
           return true;
         }
       });
-
-      // 	// For example's sake, hide the sheet after two seconds
-      // 	$timeout(function() {
-      // 		hideSheet();
-      // 	}, 2000);
     };
 
+    $ionicModal.fromTemplateUrl('templates/modalTpls/takeaway.html', {
+       scope: $scope,
+       animation: 'slide-in-up'
+     }).then(function(modal) {
+       $scope.modal = modal;
+     });
+     $scope.deliveryValue = $localStorage.getObject('deliveryValue');
+     $scope.deliveryValueChange = function() {
+        $localStorage.setObject("deliveryValue",{checked:$scope.deliveryValue.checked });
+        console.log($scope.deliveryValue);
+     };
+    $scope.newTakeawayModal = function(){
+        $scope.modal.show();
+    }
 
+    $scope.closeModal = function(){
+      $scope.modal.hide();
+    }
 })
 .controller('takeawayOrderHistoryCtrl',function($scope,$http,$state,$stateParams,$localStorage,$helpers){
   $scope.turnoverId = $localStorage.get('turnoverId');

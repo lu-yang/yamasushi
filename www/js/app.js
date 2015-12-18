@@ -29,6 +29,9 @@ app.run(function($ionicPlatform, $localStorage) {
 		if(!$localStorage.getObject('viewType')){
 			$localStorage.setObject('viewType',{checked : false});
 		}
+		if(!$localStorage.getObject('deliveryValue')){
+			$localStorage.setObject('deliveryValue',{checked : false});
+		}
 	});
 
 

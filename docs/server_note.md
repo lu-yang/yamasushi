@@ -4,7 +4,8 @@
 ### Get turnover by turnoverId (GET)
 `url : baseUrl + 'turnover/totalPrice/'  + turnoverId`
 
-### Get all turnover group by parameter ( 1 -> all, 2 -> eat on site, 3 -> take away )
+### Get all turnover group by parameter
+**( 1 -> all, 2 -> eat on site, 3 -> take away )**  
 `url : baseUrl + 'turnover/all/totalPrice/' + param`
 
 ### Get orders by turnoverId (GET)
@@ -53,3 +54,26 @@
 	},
 	"orderAttributions": null
 }]`
+
+### New take away (POST)
+`url : baseUrl + 'takeaway/'`  
+**data eg:** `{"memo":"abcd","takeaway":"false"}`  
+**return:** `{ "model": {
+        "turnover": {
+            "firstTableId": 0,
+            "tableId": 0,
+            "discount": null,
+            "takeawayId": 14,
+            "created": null,
+            "updated": null,
+            "payment": null,
+            "checkout": false,
+            "id": 166
+        },
+        "takeaway": false,
+        "created": null,
+        "updated": null,
+        "memo": "abcd",
+        "id": 14
+    },
+    "exception": null}`

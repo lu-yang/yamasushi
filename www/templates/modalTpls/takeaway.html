@@ -1,0 +1,42 @@
+<ion-modal-view class="mymodal">
+  <ion-header-bar>
+    <h1 class="title">Nouveau emporter</h1>
+    <button class="button  button-dark closeBtn" ng-click="closeModal()"><i class="icon ion-close-circled"></i></button>
+  </ion-header-bar>
+  <ion-content>
+    <div class="item-divider">
+      <div class="pull-left">
+        <h4 class="padding-left" ng-if="deliveryValue.checked == false"><i class="ion ion-bag"></i> Emporter</h4>
+        <h4 class="padding-left" ng-if="deliveryValue.checked == true"><i class="ion ion-ios-home"></i> Livraison</h4>
+      </div>
+      <div class="pull-right padding-right padding-top">
+        <label class="toggle">
+          <input type="checkbox" ng-model="deliveryValue.checked"  ng-change="deliveryValueChange()">
+          <div class="track">
+            <div class="handle"></div>
+          </div>
+        </ion-nav-buttons>
+      </label>
+    </div>
+    <div class="clearfix"></div>
+  </div>
+    <div class="form" >
+      <div class="list">
+        <label class="item item-input item-floating-label">
+          <span class="input-label">Nom du client</span>
+          <input type="text" placeholder="Nom du client">
+        </label>
+        <label class="item item-input item-floating-label">
+          <span class="input-label">Téléphone:</span>
+          <input type="number" placeholder="Téléphone:">
+        </label>
+        <label class="item item-input item-floating-label">
+          <span class="input-label">Email</span>
+          <input type="text" placeholder="Email">
+        </label>
+      </div>
+    </div>
+    <div class="clearfix"></div>
+  </div>
+</ion-content>
+</ion-modal-view>
