@@ -30,13 +30,23 @@
           <span class="input-label">Téléphone:</span>
           <input type="number" placeholder="Téléphone:">
         </label>
-        <label class="item item-input item-floating-label">
-          <span class="input-label">Email</span>
-          <input type="text" placeholder="Email">
-        </label>
+        <h4 class="text-center" ng-if="deliveryValue.checked == false">Heure d'emporter</h4>
+        <h4 class="text-center" ng-if="deliveryValue.checked == true">Heure de livraison</h4>
+        <ionic-timepicker input-obj="timePickerObject">
+  <button class="button button-block button-positive overflowShow">
+    <standard-time-meridian etime='timePickerObject.inputEpochTime'></standard-time-meridian>
+  </button>
+</ionic-timepicker>
       </div>
+      <label class="item item-input item-stacked-label">
+      	<span class="input-label">textarea label</span>
+
+      	<textarea placeholder="yyy" rows="8" cols="10">
+      	</textarea>
+      </label>
+
     </div>
-    <div class="clearfix"></div>
+
   </div>
 </ion-content>
 </ion-modal-view>

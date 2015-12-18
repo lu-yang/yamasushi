@@ -10,9 +10,9 @@ angular.module('starter.controllers')
       return;
     }
     var list = data.list;
-     $scope.takeawayList =  $filter('orderBy')(list,'deliveryTimestamp');
+    $scope.takeawayList =  $filter('orderBy')(list,'deliveryTimestamp');
 
-     console.log($scope.takeawayList);
+    console.log($scope.takeawayList);
     $helpers.loadingHide();
   }).error(function(data) {
     alert(data);
@@ -35,50 +35,80 @@ angular.module('starter.controllers')
       alert(data);
     });
 
-    }
+  }
 
-    // 查看已开桌
-    $scope.checkTableActionSheet = function(turnoverId){
-      // Show the action sheet
-      var hideSheet = $ionicActionSheet.show({
-        buttons: [
-          { text: '<b> <i class="ion-eye"></i>  Voir les détailles' }
-        ],
-        //destructiveText: "L'addition",
-        titleText: "Qu'est ce que vous voulez faire ... ?",
-        cancelText: 'Annuler',
-        cancel: function() {
-          // add cancel code..
-        },
-        buttonClicked: function(index) {
-          if(index == 0) {
-            $localStorage.set('turnoverId', turnoverId);
-            $window.location.href = '#/app/takeaways/orderHistory';
-            //	$window.location.reload();
-          }
-          return true;
+  // 查看已开桌
+  $scope.checkTableActionSheet = function(turnoverId){
+    // Show the action sheet
+    var hideSheet = $ionicActionSheet.show({
+      buttons: [
+        { text: '<b> <i class="ion-eye"></i>  Voir les détailles' }
+      ],
+      //destructiveText: "L'addition",
+      titleText: "Qu'est ce que vous voulez faire ... ?",
+      cancelText: 'Annuler',
+      cancel: function() {
+        // add cancel code..
+      },
+      buttonClicked: function(index) {
+        if(index == 0) {
+          $localStorage.set('turnoverId', turnoverId);
+          $window.location.href = '#/app/takeaways/orderHistory';
+          //	$window.location.reload();
         }
-      });
-    };
+        return true;
+      }
+    });
+  };
 
-    $ionicModal.fromTemplateUrl('templates/modalTpls/takeaway.html', {
-       scope: $scope,
-       animation: 'slide-in-up'
-     }).then(function(modal) {
-       $scope.modal = modal;
-     });
-     $scope.deliveryValue = $localStorage.getObject('deliveryValue');
-     $scope.deliveryValueChange = function() {
-        $localStorage.setObject("deliveryValue",{checked:$scope.deliveryValue.checked });
-        console.log($scope.deliveryValue);
-     };
-    $scope.newTakeawayModal = function(){
-        $scope.modal.show();
-    }
+  $ionicModal.fromTemplateUrl('templates/modalTpls/takeaway.html', {
+    scope: $scope,
+    animation: 'slide-in-up'
+  }).then(function(modal) {
+    $scope.modal = modal;
+  });
+  $scope.deliveryValue = $localStorage.getObject('deliveryValue');
 
-    $scope.closeModal = function(){
-      $scope.modal.hide();
+  $scope.deliveryValueChange = function() {
+    $localStorage.setObject("deliveryValue",{checked:$scope.deliveryValue.checked });
+    console.log($scope.deliveryValue);
+  };
+
+  $scope.newTakeawayModal = function(){
+    $scope.date = new Date();
+    $scope.modal.show();
+  }
+
+  $scope.closeModal = function(){
+    $scope.modal.hide();
+  }
+  // Time picker directive begin //
+  $scope.timePickerObject = {
+    inputEpochTime: ((new Date()).getHours() * 60 * 60 + (new Date()).getMinutes() * 60),  //Optional
+    step: 1,  //Optional
+    format: 24,  //Optional
+    titleLabel: "Introduire l'heure",  //Optional
+    setLabel: '<i class="ion ion-checkmark-circled"></i>',  //Optional
+    closeLabel: '<i class="ion ion-close-circled"></i>',  //Optional
+    setButtonType: 'button-positive',  //Optional
+    closeButtonType: 'button-stable',  //Optional
+    callback: function (val) {    //Mandatory
+      timePickerCallback(val);
     }
+  };
+
+  function timePickerCallback(val) {
+    if (typeof (val) === 'undefined') {
+      console.log('Time not selected');
+    } else {
+      $scope.timePickerObject.inputEpochTime = val;
+      var selectedTime = new Date(val * 1000);
+      console.log(selectedTime);
+      console.log('Selected epoch is : ', val, 'and the time is ', selectedTime.getUTCHours(), ':', selectedTime.getUTCMinutes(), 'in UTC');
+    }
+  }
+  // Time picker directive end //
+
 })
 .controller('takeawayOrderHistoryCtrl',function($scope,$http,$state,$stateParams,$localStorage,$helpers){
   $scope.turnoverId = $localStorage.get('turnoverId');
@@ -134,7 +164,7 @@ angular.module('starter.controllers')
 
   $scope.viewType = $localStorage.getObject('viewType');
   $scope.viewTypeChange = function() {
-     $localStorage.setObject("viewType",{checked:$scope.viewType.checked });
+    $localStorage.setObject("viewType",{checked:$scope.viewType.checked });
   };
 })
 .controller('takeawayProductListCtrl',function($scope,$http,$stateParams, $ionicModal,$localStorage,$helpers){
@@ -169,7 +199,7 @@ angular.module('starter.controllers')
 
   $scope.viewType = $localStorage.getObject('viewType');
   $scope.viewTypeChange = function() {
-     $localStorage.setObject("viewType",{checked:$scope.viewType.checked });
+    $localStorage.setObject("viewType",{checked:$scope.viewType.checked });
   };
 
   $ionicModal.fromTemplateUrl('templates/modalTpls/productDetails.html', {
