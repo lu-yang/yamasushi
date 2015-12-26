@@ -21,7 +21,7 @@
           <div class="col col-50 " >
             <div class="list card ">
               <div class="item item-image">
-                <img ng-src="{{ category[$index+0].thumb }}">
+                  <a class=" assertive" href="#/app/tabs/product/{{category[$index+0].id}}/{{category[$index+0].name}}"><img ng-src="{{ category[$index+0].thumb }}"></a>
               </div>
               <a class="item assertive" href="#/app/tabs/product/{{category[$index+0].id}}/{{category[$index+0].name}}">
                 {{ category[$index+0].name }}
@@ -31,7 +31,7 @@
           <div class="col col-50">
             <div class="list card">
               <div class="item item-image">
-                <img ng-src="{{ category[$index+1].thumb }}">
+                  <a class="assertive" href="#/app/tabs/product/{{category[$index+0].id}}/{{category[$index+0].name}}"><img ng-src="{{ category[$index+1].thumb }}"></a>
               </div>
               <a class="item assertive" href="#/app/tabs/product/{{category[$index+1].id}}/{{category[$index+1].name}}">
                 {{ category[$index+1].name }}

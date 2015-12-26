@@ -23,7 +23,7 @@
 
 ### Open table (POST)
 `url : baseUrl + 'openTable'`  
-**data eg:** `{ "tableID" : tableID }`
+**data eg:** `{ "tableID" : tableID, "checkout" : 0 }`
 
 ### Change turnover status (POST)
 `url : baseUrl + 'turnover'`  

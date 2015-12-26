@@ -1,57 +1,65 @@
 <ion-modal-view class="mymodal">
-  <div class="card">
-
-    <div class="item item-thumbnail-left text-center">
-            <img src="{{product.thumb}}"  >
-          <h3 class="padding-left"><span class="pull-left">{{product.productName}}</span></h3>
-          <h3 class="padding-left"><span class="pull-left">{{product.productPrice/100 | currency:'€ '}}</span></h3>
-          <h3 class="padding-left"><span class="pull-left">Description</span></h3>
-          <div class="padding-left pull-left">
-            <p ng-hide="{{product.description}}">
-              Rien...
-            </p>
-            <p ng-show="{{product.description}}">
-              {{product.description}}
-            </p>
-          </div>
+  <ion-header-bar>
+    <h1 class="title">{{product.productName}}</h1>
     <button class="button  button-dark closeBtn" ng-click="closeModal()"><i class="icon ion-close-circled"></i></button>
-      </div>
+  </ion-header-bar>
+  <ion-content>
+    <div class="card">
 
-    <!-- <form name="myForm" ng-submit="onSubmit()"> -->
-    <div class="text-center">
-
-      <div class="item item-text-wrap">
-        <button class="button icon ion-ios-minus" ng-click="subtractCount()"></button>
-        <div class="productCount" id="productCount{{product.id}}">
-          <input  ng-model="currentCount" name="count"    >
-        </div>
-        <button class="button icon ion-ios-plus" ng-click="addCount()"></button>
-        <hr>
-        <button class="button button-positive" ng-click="onSubmit()"><i class="icon ion-android-cart"></i> Ajouter</button>
-      </div>
-
-      <div class="attributions" ng-show = "product.attributionGroups" ng-repeat = "(key , attrGroup) in product.attributionGroups">
-        <!-- attributions -->
-        <div class="item item-divider" >
-          {{attrGroup.attributionGroupName}}
-        </div>
-        <div class="item item-text-wrap" >
-          <div class="list">
-          <label class="item item-radio " ng-repeat = "(key , attr) in attrGroup.attributions">
-            <input type="radio" name="group" ng-model = "attrValue.key" ng-value="{{key}}">
-            <div class="item-content">
-              <span class="pull-left">{{attr.attributionName}}</span><span class="pull-right">{{attr.attributionPrice/100 | currency : "€"}}</span>
-              <div class="clearfix"></div>
-            </div>
-            <i class="radio-icon ion-checkmark"></i>
-          </label>
-
-        </div>
+      <div class="item item-thumbnail-left text-center">
+        <img src="{{product.thumb}}"  >
+        <h3 class="padding-left"><span class="pull-left">Prix: {{product.productPrice/100 | currency:'€ '}}</span></h3>
+        <h3 class="padding-left"><span class="pull-left">Description:</span></h3>
+        <div class="padding-left pull-left">
+          <p ng-hide="{{product.description}}">
+            Rien...
+          </p>
+          <p ng-show="{{product.description}}">
+            {{product.description}}
+          </p>
         </div>
       </div>
+
+      <!-- <form name="myForm" ng-submit="onSubmit()"> -->
+      <div class="text-center">
+
+        <div class="item item-text-wrap">
+          <button class="button icon ion-ios-minus" ng-click="subtractCount()"></button>
+          <div class="productCount" id="productCount{{product.id}}">
+            <input  ng-model="currentCount" name="count"    >
+          </div>
+          <button class="button icon ion-ios-plus" ng-click="addCount()"></button>
+          <hr>
+          <button class="button button-positive" ng-click="onSubmit()"><i class="icon ion-android-cart"></i> Ajouter</button>
+        </div>
+  <div class="list" ng-if = "product.attributionGroups">
+        <div class="attributions" ng-if="attrGroup.attributionGroupStatus ==1 " ng-repeat = "(key , attrGroup) in product.attributionGroups">
+
+          <!-- attributions -->
+          <div class="item item-divider attribution-item-divider">
+            {{attrGroup.attributionGroupName}} key= {{key}}
+          </div>
+
+            <ion-radio ng-if="attrGroup.attributionGroupType ==1" ng-repeat="item in attrGroup.attributions"
+                               ng-value="item.attributionName "
+                               ng-model="attrValue[key].name"
+                               ng-change = "updateValue(key,item)"
+                               name="group_{{key}}">
+ <span class="pull-left">{{item.attributionName}}</span><span class="pull-right">{{item.attributionPrice/100 | currency : "€"}}</span>
+                    </ion-radio>
+                    <ion-checkbox ng-if="attrGroup.attributionGroupType ==2" ng-repeat="(index,item) in attrGroup.attributions"
+                                       ng-model="checkValue[key].itemValue[index].checked"
+                                       ng-checked="checkValue[key].itemValue[index].checked"
+                                       >
+         <span class="pull-left">{{item.attributionName}} index = {{index}}</span><span class="pull-right">{{item.attributionPrice/100 | currency : "€"}}</span>
+                            </ion-checkbox>
+
+          </div>
+        </div>
+
+      </div>
+
 
     </div>
-
-
-  </div>
+  </ion-content>
 </ion-modal-view>

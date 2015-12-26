@@ -17,7 +17,7 @@
 
       <div ng-repeat="item in productList" ng-show = "viewType.checked == true">
           <div class="row" ng-if="$even">
-            <div class="col col-50 " >
+            <div class="col col-50 " ng-if="productList[$index+0]">
               <div class="list card " ng-click ="openModal($index)">
                 <div class="item item-image">
                   <img ng-src="{{ productList[$index+0].thumb }}">
@@ -27,7 +27,7 @@
                 </a>
               </div>
             </div>
-            <div class="col col-50">
+            <div class="col col-50" ng-if="productList[$index+1]">
               <div class="list card" ng-click ="openModal($index+1)">
                 <div class="item item-image">
                   <img ng-src="{{ productList[$index+1].thumb }}">

@@ -47,6 +47,14 @@
     box-shadow:none;
   }
 
+  /*attribution-item-divider*/
+  .attribution-item-divider{
+
+    background-color: #dddddd;
+    color: #333;
+
+  }
+
   /* android customer button */
   .platform-android .action-sheet-backdrop.active {
     background-color: rgba(0, 0, 0, 0.2); }

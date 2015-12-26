@@ -53,7 +53,7 @@ angular.module('starter.controllers')
 				buttonClicked: function(index) {
 
 					POST.url = baseUrl + 'openTable';
-					POST.data = JSON.stringify({"tableId":tableId});
+					POST.data = JSON.stringify({"tableId":tableId, "checkout":0});
 					$http(POST).success(function(data){
 					$localStorage.set('selectedTableId', data.model.firstTableId);
 					$localStorage.set('turnoverId', data.model.id);
