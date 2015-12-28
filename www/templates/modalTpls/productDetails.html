@@ -32,34 +32,35 @@
           <hr>
           <button class="button button-positive" ng-click="onSubmit()"><i class="icon ion-android-cart"></i> Ajouter</button>
         </div>
-  <div class="list" ng-if = "product.attributionGroups">
-        <div class="attributions" ng-if="attrGroup.attributionGroupStatus ==1 " ng-repeat = "(key , attrGroup) in product.attributionGroups">
+        <div class="list" ng-if = "product.attributionGroups">
+          <div class="attributions" ng-if="attrGroup.attributionGroupStatus ==1 " ng-repeat = "(key , attrGroup) in product.attributionGroups">
 
-          <!-- attributions -->
-          <div class="item item-divider attribution-item-divider">
-            {{attrGroup.attributionGroupName}} key= {{key}}
-          </div>
+            <!-- attributions -->
+            <div class="item item-divider attribution-item-divider">
+              {{attrGroup.attributionGroupName}}
+            </div>
 
-            <ion-radio ng-if="attrGroup.attributionGroupType ==1" ng-repeat="item in attrGroup.attributions"
-                               ng-value="item.attributionName "
-                               ng-model="attrValue[key].name"
-                               ng-change = "updateValue(key,item)"
-                               name="group_{{key}}">
- <span class="pull-left">{{item.attributionName}}</span><span class="pull-right">{{item.attributionPrice/100 | currency : "€"}}</span>
-                    </ion-radio>
-                    <ion-checkbox ng-if="attrGroup.attributionGroupType ==2" ng-repeat="(index,item) in attrGroup.attributions"
-                                       ng-model="checkValue[key].itemValue[index].checked"
-                                       ng-checked="checkValue[key].itemValue[index].checked"
-                                       >
-         <span class="pull-left">{{item.attributionName}} index = {{index}}</span><span class="pull-right">{{item.attributionPrice/100 | currency : "€"}}</span>
-                            </ion-checkbox>
+            <ion-radio ng-if="attrGroup.attributionGroupType ==1" ng-repeat=" item in attrGroup.attributions"
+            ng-value="item.attributionName "
+            ng-model="attrValue[key].attributionName"
+            ng-change = "updateValue(key,item)"
+            name="group_{{key}}">
+            <span class="pull-left">{{item.attributionName}} {{item.attributionName}}</span><span class="pull-right" ng-if="item.attributionPrice !=0">{{item.attributionPrice/100 | currency : "€"}}</span>
+          </ion-radio>
 
-          </div>
-        </div>
+          <ion-checkbox ng-if="attrGroup.attributionGroupType ==2" ng-repeat="(index,item) in attrGroup.attributions"
+          ng-model="checkValue[key].checkData[index].checked"
+          ng-checked="checkValue[key].checkData[index].checked"
+          >
+          <span class="pull-left">{{item.attributionName}} {{item.checked}}</span><span class="pull-right" ng-if="item.attributionPrice !=0">{{item.attributionPrice/100 | currency : "€"}}</span>
+        </ion-checkbox>
 
       </div>
-
-
     </div>
-  </ion-content>
+
+  </div>
+
+
+</div>
+</ion-content>
 </ion-modal-view>

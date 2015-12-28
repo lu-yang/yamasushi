@@ -2,8 +2,9 @@ angular.module('starter.controllers')
 .controller('TakeawayListCtrl',function($scope,$http,$helpers,$ionicActionSheet,$ionicModal,$localStorage,$window,$filter){
   $helpers.loadingShow();
 
-  GET.url = baseUrl + 'takeaways/2015-01-01/2015-12-17';
+  GET.url = baseUrl + 'takeaways/2015-01-01/2015-12-29';
   $http(GET).success(function(data) {
+    console.log(data);
     if (!data.list || data.list.length == 0) {
       $helpers.loadingHide();
       $helpers.alertHelper("non emporter");
@@ -61,6 +62,77 @@ angular.module('starter.controllers')
     });
   };
 
+  // Time picker directive begin //
+  var weekDaysList = ["Di", "Lu", "Ma", "Me", "Je", "Ve", "Sa"];
+  var disabledDates = [
+      new Date('Wednesday')]; //Works with any valid Date formats like long format
+
+  $scope.datepickerObject = {
+    // inputEpochTime: ((new Date()).getHours() * 60 * 60 + (new Date()).getMinutes() * 60),  //Optional
+    titleLabel: 'Choisi le jour:',  //Optional
+    todayLabel: "Aujourd'hui",  //Optional
+    closeLabel: 'X',  //Optional
+    setLabel: 'Set',  //Optional
+    setButtonType : 'button-assertive',  //Optional
+    todayButtonType : 'button-assertive',  //Optional
+    closeButtonType : 'button-assertive',  //Optional
+    inputDate: new Date(),  //Optional
+    mondayFirst: true,  //Optional
+    disabledDates: disabledDates,//Optional
+    weekDaysList :weekDaysList,
+    templateType: 'modal', //Optional
+    showTodayButton: 'false', //Optional
+    modalHeaderColor: 'bar-clean', //Optional
+    modalFooterColor: 'bar-positive', //Optional
+    from: new Date(), //Optional
+    //to: new Date(2018, 12, 25), //Optional
+    callback: function (val) {  //Mandatory
+      datePickerCallback(val);
+    },
+    dateFormat: 'dd-MM-yyyy', //Optional
+    closeOnSelect: false, //Optional
+  };
+
+  var datePickerCallback = function (val) {
+    if (typeof(val) === 'undefined') {
+      console.log('No date selected');
+    } else {
+    $scope.datepickerObject.inputDate = val;
+      console.log('Selected date is : ', $filter('date')(val , "yyyy-MM-dd"));
+      $scope.SelectedDate = $filter('date')(val , "yyyy-MM-dd");
+    }
+  };
+
+  $scope.timePickerObject = {
+    inputEpochTime: ((new Date()).getHours() * 60 * 60 + (new Date()).getMinutes() * 60),  //Optional
+    step: 1,  //Optional
+    format: 24,  //Optional
+    titleLabel: "Introduire l'heure",
+    todayLabel: 'Today',   //Optional
+    setLabel: '<i class="ion ion-checkmark-circled"></i>',  //Optional
+    closeLabel: '<i class="ion ion-close-circled"></i>',  //Optional
+    setButtonType: 'button-positive',  //Optional
+    closeButtonType: 'button-stable',  //Optional
+    callback: function (val) {    //Mandatory
+      timePickerCallback(val);
+    }
+  };
+
+  var timePickerCallback = function (val) {
+    if (typeof (val) === 'undefined') {
+      console.log('Time not selected');
+    } else {
+      $scope.timePickerObject.inputEpochTime = val;
+      var selectedTime = new Date(val * 1000);
+      console.log(selectedTime);
+      console.log('Selected epoch is : ', val, 'and the time is ', selectedTime.getUTCHours(), ':', selectedTime.getUTCMinutes(), 'in UTC');
+      $scope.selectedTime =  selectedTime.getUTCHours();
+    }
+  }
+  // Time picker directive end //
+
+
+
   $ionicModal.fromTemplateUrl('templates/modalTpls/takeaway.html', {
     scope: $scope,
     animation: 'slide-in-up'
@@ -77,37 +149,31 @@ angular.module('starter.controllers')
   $scope.newTakeawayModal = function(){
     $scope.date = new Date();
     $scope.modal.show();
+    console.log($scope.deliveryValue);
+$scope.SelectedDate = '';
+$scope.SelectedTime = '';
+    $scope.user = {name:'',telephone:'',memo:'',deliveryTimestamp:'', address:'',city:'',ring:''};
   }
 
   $scope.closeModal = function(){
     $scope.modal.hide();
   }
-  // Time picker directive begin //
-  $scope.timePickerObject = {
-    inputEpochTime: ((new Date()).getHours() * 60 * 60 + (new Date()).getMinutes() * 60),  //Optional
-    step: 1,  //Optional
-    format: 24,  //Optional
-    titleLabel: "Introduire l'heure",  //Optional
-    setLabel: '<i class="ion ion-checkmark-circled"></i>',  //Optional
-    closeLabel: '<i class="ion ion-close-circled"></i>',  //Optional
-    setButtonType: 'button-positive',  //Optional
-    closeButtonType: 'button-stable',  //Optional
-    callback: function (val) {    //Mandatory
-      timePickerCallback(val);
-    }
-  };
 
-  function timePickerCallback(val) {
-    if (typeof (val) === 'undefined') {
-      console.log('Time not selected');
-    } else {
-      $scope.timePickerObject.inputEpochTime = val;
-      var selectedTime = new Date(val * 1000);
-      console.log(selectedTime);
-      console.log('Selected epoch is : ', val, 'and the time is ', selectedTime.getUTCHours(), ':', selectedTime.getUTCMinutes(), 'in UTC');
-    }
+  $scope.newTakeaway = function(){
+      $scope.user.deliveryTimestamp = $scope.SelectedDate + ' ' + $scope.SelectedTime;
+      //$helpers.loadingShow();
+      POST.url = baseUrl + 'takeaway' ;
+      $http(POST).success(function(data){
+        console.log(data);
+      }).error(function(data) {
+        alert(data);
+      //  $helpers.loadingHide();
+      });
+
   }
-  // Time picker directive end //
+
+
+
 
 })
 .controller('takeawayOrderHistoryCtrl',function($scope,$http,$state,$stateParams,$localStorage,$helpers){

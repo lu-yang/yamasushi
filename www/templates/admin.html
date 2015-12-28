@@ -1,32 +1,51 @@
 <ion-view view-title="Compte: T-{{selectedTableId}}">
   <ion-content>
     <ion-refresher
-  pulling-text="recharge en cours..."
-  on-refresh="doRefresh()">
-</ion-refresher>
-<ul class="list">
-  <li class="item">
-    N&deg; de table : T-{{selectedTableId}}
-  </li>
-  <li class="item">
-    Update : {{lastActivity | date:'H:mm ( d-MMM-yy )'}}
-  </li>
+    pulling-text="recharge en cours..."
+    on-refresh="doRefresh()">
+  </ion-refresher>
+  <ul class="list">
+    <li class="item">
+      N&deg; de table : T-{{selectedTableId}}
+    </li>
+    <li class="item">
+      Crée : {{created | date:'H:mm ( d-MMM-yy )'}}
+    </li>
     <li class="item">
       État : <span ng-show="checkStatus == false" class="assertive">Occupé</span>
     </li>
     <li class="item">
-      Total : {{totalPrice}} €
+      <h2>Total : {{totalPrice}} €</h2>
     </li>
-</ul>
-<button class="button button-block button-dark" ng-click="printReceiptActionSheet()">
-<i class="ion ion-printer"></i> Imprimer Ticket
-</button>
-<hr>
-<button class="button button-block button-dark" ng-click="checkoutActionSheet(0)">
-<i class="ion ion-cash"></i> Paiement (Cash)
-</button>
-<button class="button button-block button-dark" ng-click="checkoutActionSheet(1)">
-<i class="ion ion-card"></i> Paiement (Carte)
-</button>
-  </ion-content>
+  </ul>
+  <div class="row header">
+    <div class="col">TVA</div>
+    <div class="col">Net</div>
+    <div class="col">Excl</div>
+    <div class="col">Total</div>
+  </div>
+  <div class="row" >
+    <div class="col">{{payment.food_tax}}</div>
+    <div class="col">{{payment.food_tax_paid | number:2}}</div>
+    <div class="col">{{payment.food_paid | number:2}}</div>
+    <div class="col">{{payment.food_total_paid | number:2}} €</div>
+  </div>
+  <div class="row" >
+    <div class="col">{{payment.alcool_tax}}</div>
+    <div class="col">{{payment.alcool_tax_paid | number:2}}</div>
+    <div class="col">{{payment.alcool_paid | number:2}}</div>
+    <div class="col">{{payment.alcool_total_paid | number:2}} €</div>
+  </div>
+  <hr>
+  <button class="button button-block button-dark" ng-click="printReceiptActionSheet()">
+    <i class="ion ion-printer"></i> Imprimer un reçu
+  </button>
+  <hr>
+  <button class="button button-block button-dark" ng-click="checkoutActionSheet(0)">
+    <i class="ion ion-cash"></i> Paiement (Cash)
+  </button>
+  <button class="button button-block button-dark" ng-click="checkoutActionSheet(1)">
+    <i class="ion ion-card"></i> Paiement (Carte)
+  </button>
+</ion-content>
 </ion-view>

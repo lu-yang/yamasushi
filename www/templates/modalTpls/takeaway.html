@@ -20,33 +20,51 @@
     </div>
     <div class="clearfix"></div>
   </div>
-    <div class="form" >
-      <div class="list">
-        <label class="item item-input item-floating-label">
-          <span class="input-label">Nom du client</span>
-          <input type="text" placeholder="Nom du client">
-        </label>
-        <label class="item item-input item-floating-label">
-          <span class="input-label">Téléphone:</span>
-          <input type="number" placeholder="Téléphone:">
-        </label>
-        <h4 class="text-center" ng-if="deliveryValue.checked == false">Heure d'emporter</h4>
-        <h4 class="text-center" ng-if="deliveryValue.checked == true">Heure de livraison</h4>
-        <ionic-timepicker input-obj="timePickerObject">
-  <button class="button button-block button-positive overflowShow">
-    <standard-time-meridian etime='timePickerObject.inputEpochTime'></standard-time-meridian>
-  </button>
-</ionic-timepicker>
-      </div>
-      <label class="item item-input item-stacked-label">
-      	<span class="input-label">textarea label</span>
-
-      	<textarea placeholder="yyy" rows="8" cols="10">
-      	</textarea>
+  <div class="form" >
+    <div class="list">
+      <label class="item item-input item-floating-label">
+        <span class="input-label">Nom du client</span>
+        <input type="text" placeholder="Nom du client" ng-model="user.name" >
       </label>
+      <label class="item item-input item-floating-label">
+        <span class="input-label">Téléphone:</span>
+        <input type="number" placeholder="Téléphone:" ng-model="user.telephone">
+      </label>
+      <label class="item item-input item-floating-label" ng-if="deliveryValue.checked">
+        <span class="input-label">Adresse:</span>
+        <input type="text" placeholder="Adresse:" ng-model="user.address">
+      </label>
+      <label class="item item-input item-floating-label" ng-if="deliveryValue.checked">
+        <span class="input-label">Commune:</span>
+        <input type="text" placeholder="Commune:" ng-model="user.city">
+      </label>
+      <label class="item item-input item-floating-label" ng-if="deliveryValue.checked">
+        <span class="input-label">Sonnette:</span>
+        <input type="text" placeholder="Sonnette:" ng-model="user.ring">
+      </label>
+      <h4 class="text-center" ng-if="deliveryValue.checked == false">Heure d'emporter</h4>
+      <h4 class="text-center" ng-if="deliveryValue.checked == true">Heure de livraison</h4>
 
+      <ionic-datepicker input-obj="datepickerObject">
+        <button class="button button-block button-positive"> {{datepickerObject.inputDate | date:'dd - MMMM - yyyy'}}</button>
+      </ionic-datepicker>
+      <ionic-timepicker input-obj="timePickerObject">
+        <button class="button button-block button-positive overflowShow">
+          <standard-time-no-meridian etime='timePickerObject.inputEpochTime'></standard-time-no-meridian>
+        </button>
+      </ionic-timepicker>
     </div>
+    <label class="item item-input item-stacked-label">
+      <span class="input-label">Message supplémentaire:</span>
+
+      <textarea placeholder="Texte..." rows="8" cols="10" name="memo" ng-model="user.memo">
+      </textarea>
+    </label>
+    <hr>
+    <button type="button" name="button" class="button button-block button-assertive" ng-click="newTakeaway()">creer</button>
 
   </div>
+
+</div>
 </ion-content>
 </ion-modal-view>

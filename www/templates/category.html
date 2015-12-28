@@ -18,7 +18,7 @@
 
     <div ng-repeat="item in category" ng-show = "viewType.checked == true">
         <div class="row" ng-if="$even">
-          <div class="col col-50 " >
+          <div class="col col-50 " ng-if="category[$index+0]">
             <div class="list card ">
               <div class="item item-image">
                   <a class=" assertive" href="#/app/tabs/product/{{category[$index+0].id}}/{{category[$index+0].name}}"><img ng-src="{{ category[$index+0].thumb }}"></a>
@@ -28,7 +28,7 @@
               </a>
             </div>
           </div>
-          <div class="col col-50">
+          <div class="col col-50" ng-if="category[$index+1]">
             <div class="list card">
               <div class="item item-image">
                   <a class="assertive" href="#/app/tabs/product/{{category[$index+0].id}}/{{category[$index+0].name}}"><img ng-src="{{ category[$index+1].thumb }}"></a>

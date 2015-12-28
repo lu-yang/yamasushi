@@ -1,4 +1,4 @@
-angular.module('starter.controllers', [ 'ngResource','customFilters','customHelpers','ionic-timepicker'])
+angular.module('starter.controllers', [ 'ngResource','customFilters','customHelpers','ionic-timepicker','ionic-datepicker'])
 
 	.controller('OrderListCtrl', function($scope, $http) {
 

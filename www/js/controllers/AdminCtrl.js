@@ -5,50 +5,48 @@ angular.module('starter.controllers')
 	$scope.selectedTableId = 	$localStorage.get('selectedTableId');
 	$scope.checkTurnoverHealth($scope.turnoverId);
 
-	/* get order informations and calculated total price */
-	GET.url = baseUrl + 'orders/' + locale + '/' + $scope.turnoverId;
+	GET.url = baseUrl + 'turnover/totalPrice/' + $scope.turnoverId;
 	$http(GET).success(function(data){
 		$helpers.loadingHide();
 		var totalPrice = 0;
-		if (!data.list || data.list.length == 0) {
+		if (!data.model || data.model.length == 0) {
 			//alert("此桌还没有点单。");
 			$scope.orders = null;
-			$scope.totalPrice = Number(0).toFixed(2);
 			$scope.checkStatus = false;
-			$scope.lastActivity = null;
+			$scope.created = null;
+			$scope.totalPrice = totalPrice;
 			return;
 		}else{
-			var list = data.list;
-			for (var i = 0; i < list.length; ++i) {
-				totalPrice +=  Number(list[i].product.productPrice * list[i].count/100);
-			}
-			$scope.totalPrice = totalPrice.toFixed(2);
-			$scope.checkStatus = list[0].turnover.checkout;
-			$scope.lastActivity = list[list.length-1].created;
+			 var d = data.model;
+			$scope.payment = d;
+			$scope.totalPrice = d.total;
+			$scope.checkStatus = d.turnover.checkout;
+			$scope.created =  d.turnover.created;
 		}
 	}).error(function(data) {
 		alert(data);
 	});
 
+
 	$scope.doRefresh = function(){
 		$helpers.loadingShow();
-		GET.url = baseUrl + 'orders/' + locale + '/' + $scope.turnoverId;
+		GET.url = baseUrl + 'turnover/totalPrice/' + $scope.turnoverId;
 		$http(GET).success(function(data){
 			$helpers.loadingHide();
 			var totalPrice = 0;
-			if (!data.list || data.list.length == 0) {
+			if (!data.model || data.model.length == 0) {
 				//alert("此桌还没有点单。");
 				$scope.orders = null;
-				$scope.totalPrice = Number(0).toFixed(2);
 				$scope.checkStatus = false;
+				$scope.created = null;
+				$scope.totalPrice = totalPrice;
 				return;
 			}else{
-				var list = data.list;
-				for (var i = 0; i < list.length; ++i) {
-					totalPrice +=  Number(list[i].product.productPrice * list[i].count/100);
-				}
-				$scope.totalPrice = totalPrice.toFixed(2);
-				$scope.checkStatus = list[0].turnover.checkout;
+				 var d = data.model;
+				$scope.payment = d;
+				$scope.totalPrice = d.total;
+				$scope.checkStatus = d.turnover.checkout;
+				$scope.created =  d.turnover.created;
 			}
 			$scope.$broadcast('scroll.refreshComplete');
 		}).error(function(data) {
