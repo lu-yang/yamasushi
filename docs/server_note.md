@@ -1,6 +1,10 @@
 ### Get server constant (GET)
 `url : baseUrl + 'constant'`
 
+### Get available tables  (GET)
+`url : baseUrl + 'availableTables'`
+
+
 ### Get turnover by turnoverId (GET)
 `url : baseUrl + 'turnover/totalPrice/'  + turnoverId`
 
@@ -13,6 +17,10 @@
 
 ### Get all categories (GET)
 `url : baseUrl + 'categories/' + locale + '/1'`
+
+### Get all product by categoryId (GET)
+`url : baseUrl + 'products/' + locale + '/' + categoryId`
+
 
 ### Get all takeaways by date (GET)
 `url : baseUrl + 'takeaways/' + {from} + '/' + {to}`

@@ -1,32 +1,78 @@
-<ion-view view-title="Compte">
+<ion-view view-title="Emporter {{takeawayId}}">
   <ion-content>
     <ion-refresher
-  pulling-text="recharge en cours..."
-  on-refresh="doRefresh()">
-</ion-refresher>
-<ul class="list">
-  <li class="item">
-    N&deg; de table :
-  </li>
-  <li class="item">
-    Update : {{lastActivity | date:'H:mm ( d-MMM-yy )'}}
-  </li>
+    pulling-text="recharge en cours..."
+    on-refresh="doRefresh()">
+  </ion-refresher>
+  <ul class="list">
     <li class="item">
-      État : <span ng-show="checkStatus == false" class="assertive">Occupé</span>
+        <div class="pull-left">
+      <h3 ng-if="takeawayData.delivery">Livraison à {{takeawayData.deliveryTimestamp | date:"HH:mm"}}</h3>
+      <h3 ng-if="!takeawayData.delivery">Emporter à {{takeawayData.deliveryTimestamp | date:"HH:mm"}}</h3>
+      </div>
+        <!-- <div class="pull-right">
+          <button class="button button-clear button-positive button-small" ng-click="changeTakeawayData()">Modifier</button>
+        </div> -->
     </li>
     <li class="item">
-      Total : {{totalPrice}} €
+      <div class="pull-left">
+        <span ng-if="takeawayData.source == 1"><i class="ion ion-earth"></i></span>
+        <span ng-if="takeawayData.source == 2"><i class="ion ion-ios-telephone"></i></span>
+        <span ng-if="takeawayData.source == 3"><i class="ion ion-android-restaurant"></i></span>
+      </div>
+
+      <div class="pull-right">
+        <span class="assertive" ng-if="takeawayData.vaild == false"><i class="ion ion-ios-checkmark-outline"></i></span>
+        <span class="assertive" ng-if="takeawayData.vaild == true"><i class="ion ion-ios-checkmark"></i></span>
+        <span class="assertive" ng-if="takeawayData.printed == false"><i class="ion ion-ios-printer-outline"></i></span>
+        <span class="assertive" ng-if="takeawayData.printed == true"><i class="ion ion-ios-printer"></i></span>
+        <span class="assertive" ng-if="checkStatus == false"><i class="ion ion-social-euro-outline"></i></span>
+        <span class="assertive" ng-if="checkStatus == true"><i class="ion ion-social-euro"></i></span>
+      </div>
     </li>
-</ul>
-<button class="button button-block button-dark" ng-click="printReceiptActionSheet()">
-<i class="ion ion-printer"></i> Imprimer Ticket
-</button>
-<hr>
-<button class="button button-block button-dark" ng-click="checkoutActionSheet(0)">
-<i class="ion ion-cash"></i> Paiement (Cash)
-</button>
-<button class="button button-block button-dark" ng-click="checkoutActionSheet(1)">
-<i class="ion ion-card"></i> Paiement (Carte)
-</button>
-  </ion-content>
+    <li class="item">
+      Crée : {{created | date:'H:mm ( d-MMM-yy )'}}
+    </li>
+    <li class="item">
+      État : <span ng-show="checkStatus == false" class="assertive">Non Payer</span><span ng-show="checkStatus != false" class="balanced">Payé</span>
+    </li>
+    <li class="item">
+      <h2>Total : {{totalPrice}} €</h2>
+    </li>
+  </ul>
+  <div class="row header">
+    <div class="col">TVA</div>
+    <div class="col">Net</div>
+    <div class="col">Excl</div>
+    <div class="col">Total</div>
+  </div>
+  <div class="row" >
+    <div class="col">{{payment.takeaway_food_tax}}</div>
+    <div class="col">{{payment.takeaway_food_tax_paid | number:2}}</div>
+    <div class="col">{{payment.takeaway_food_paid | number:2}}</div>
+    <div class="col">{{payment.takeaway_food_total_paid | number:2}} €</div>
+  </div>
+  <div class="row" >
+    <div class="col">{{payment.alcool_tax}}</div>
+    <div class="col">{{payment.alcool_tax_paid | number:2}}</div>
+    <div class="col">{{payment.alcool_paid | number:2}}</div>
+    <div class="col">{{payment.alcool_total_paid | number:2}} €</div>
+  </div>
+  <hr>
+  <button class="button button-block button-dark" ng-click="printReceiptActionSheet()">
+    <i class="ion ion-printer"></i> Imprimer un reçu
+  </button>
+  <hr>
+  <button class="button button-block button-dark" ng-click="checkoutActionSheet(0)">
+    <i class="ion ion-cash"></i> Paiement (Cash)
+  </button>
+  <button class="button button-block button-dark" ng-click="checkoutActionSheet(1)">
+    <i class="ion ion-card"></i> Paiement (Carte)
+  </button>
+  <hr>
+  <button class="button button-block button-assertive" ng-click="deleteActionSheet()">
+    <i class="ion ion-trash-a"></i> Annuler cette commande
+  </button>
+
+</ion-content>
 </ion-view>

@@ -214,6 +214,7 @@ function($stateProvider, $urlRouterProvider,$ionicConfigProvider) {
 	}
 
 }).state('app.takeawayList',{
+	cache:false,
 	url:"/takeawayList",
 	views : {
 		"menuContent":{
@@ -222,6 +223,7 @@ function($stateProvider, $urlRouterProvider,$ionicConfigProvider) {
 		}
 	}
 }).state('app.takeaways',{
+	cache:false,
 	url:"/takeaways",
 	views : {
 		"menuContent":{
@@ -235,6 +237,15 @@ function($stateProvider, $urlRouterProvider,$ionicConfigProvider) {
 		"takeaway-orderHistory":{
 			templateUrl :"templates/takeaway/orderHistory.html",
 			controller:"takeawayOrderHistoryCtrl"
+		}
+	}
+}).state('app.takeawayOrderHistoryEdit',{
+	cache:false,
+	url:"/takeawayOrderHistoryEdit",
+	views : {
+		"menuContent":{
+			templateUrl :"templates/takeaway/orderHistoryEdit.html",
+			controller:"orderHistoryEditCtrl"
 		}
 	}
 }).state('app.takeaways.category',{

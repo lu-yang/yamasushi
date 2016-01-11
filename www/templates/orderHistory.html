@@ -16,7 +16,7 @@
           <p ng-show = "item.orderAttributions"><b>Prix : {{(item.product.productPrice+item.orderAttributions[0].attribution.attributionPrice)/100 | currency:'€ '}}</b></p>
           <div ng-if = "item.orderAttributions" class="padding-top padding-bottom"><h4><small class="assertive">options:</small></h4>
                <div class="" ng-repeat = " a in item.orderAttributions">
-                 <small>{{a.attribution.attributionName}}</small> <small ng-if="a.attribution.attributionPrice >0">{{a.attribution.attributionPrice/100 | currency: "€ "}}</small>
+                 <small>{{a.count}} x {{a.attribution.attributionName}}</small> <small ng-if="a.attribution.attributionPrice >0">{{a.attribution.attributionPrice/100 | currency: "€ "}}</small>
                </div>
 
           </div>

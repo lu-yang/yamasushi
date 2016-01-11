@@ -16,7 +16,6 @@ angular.module('starter.controllers')
 		// 清除外卖桌号
 		list.splice(0,1);
 		$scope.tableList = list;
-		console.log(list);
 		$helpers.loadingHide();
 
 	}).error(function(data) {

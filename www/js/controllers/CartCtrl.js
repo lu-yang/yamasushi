@@ -199,43 +199,43 @@ angular.module('starter.controllers')
                   locale: $scope.checkValue[i].checkData[j].locale
                 }
               }) ;
-              }
             }
           }
         }
-      }else{
-        AttributionData = [];
-        AttributionData = null;
-
       }
-
-      /* cart data */
-      $scope.cart.push({
-        "count": $scope.currentCount,
-        "product": {
-          "id": $scope.product.id,
-          "categoryId": $scope.product.categoryId
-        },
-        "orderAttributions": AttributionData,
-        "productInfo": {
-          "productName": $scope.product.productName,
-          "categoryName": $scope.categoryName,
-          "productPrice": $scope.product.productPrice,
-          "thumb": $scope.product.thumb
-        }
-      });
-
-
-      $localStorage.set('cartData-' + $scope.selectedTableId, angular.toJson($scope.cart));
-      $scope.currentCount = 0;
-      // $scope.attrValue = null;
-      $scope.checkValue = null;
-      $scope.cartData = $localStorage.get('cartData-' + $scope.selectedTableId);
-      $helpers.alertHelper('reussit');
+    }else{
+      AttributionData = [];
+      AttributionData = null;
 
     }
 
+    /* cart data */
+    $scope.cart.push({
+      "count": $scope.currentCount,
+      "product": {
+        "id": $scope.product.id,
+        "categoryId": $scope.product.categoryId
+      },
+      "orderAttributions": AttributionData,
+      "productInfo": {
+        "productName": $scope.product.productName,
+        "categoryName": $scope.categoryName,
+        "productPrice": $scope.product.productPrice,
+        "thumb": $scope.product.thumb
+      }
+    });
+
+
+    $localStorage.set('cartData-' + $scope.selectedTableId, angular.toJson($scope.cart));
+    $scope.currentCount = 0;
+    // $scope.attrValue = null;
+    $scope.checkValue = null;
+    $scope.cartData = $localStorage.get('cartData-' + $scope.selectedTableId);
+    $helpers.alertHelper('reussit');
+
   }
+
+}
 })
 
 
@@ -243,6 +243,10 @@ angular.module('starter.controllers')
   $scope.turnoverId = $localStorage.get('turnoverId');
   $scope.selectedTableId = $localStorage.get('selectedTableId');
   $scope.checkTurnoverHealth($scope.turnoverId);
+  if($scope.selectedTableId == 0){
+    window.location.href="#/app/takeaways/orderHistory";
+    window.location.reload();
+  }
   $helpers.loadingShow();
   GET.url = baseUrl + 'extOrders/' + locale + '/' + $scope.turnoverId;
   $http(GET).success(function(data) {
@@ -339,6 +343,20 @@ angular.module('starter.controllers')
           return d;
         }
       });
+
+      newOrderAttributions_a = [];
+      if(a[i].orderAttributions){
+        for (var j = 0; j < a[i].orderAttributions.length; j++) {
+          newOrderAttributions_a[j] = {
+            attribution :   a[i].orderAttributions[j].attribution,
+            count : newCount[0].newCount,
+            id : a[i].orderAttributions[j].id,
+            orderId :a[i].orderAttributions[j].orderId
+          }
+        }
+      }else{
+        newOrderAttributions_a = null;
+      }
       dataToPrint[i] = {
         "id": a[i].id,
         "count": newCount[0].newCount,
@@ -346,7 +364,7 @@ angular.module('starter.controllers')
           "id": a[i].product.id,
           "categoryId": a[i].category.id
         },
-        "orderAttributions": a[i].orderAttributions
+        "orderAttributions": newOrderAttributions_a
       };
     }
 
@@ -356,6 +374,20 @@ angular.module('starter.controllers')
           return d;
         }
       });
+
+      newOrderAttributions_b = [];
+      if(b[i].orderAttributions){
+        for (var j = 0; j < b[i].orderAttributions.length; j++) {
+          newOrderAttributions_b[j] = {
+            attribution :   b[i].orderAttributions[j].attribution,
+            count : newCount[0].newCount,
+            id : b[i].orderAttributions[j].id,
+            orderId :b[i].orderAttributions[j].orderId
+          }
+        }
+      }else{
+        newOrderAttributions_b = null;
+      }
       dataNotToPrint[i] = {
         "id": b[i].id,
         "count": newCount[0].newCount,
@@ -363,12 +395,20 @@ angular.module('starter.controllers')
           "id": b[i].product.id,
           "categoryId": b[i].category.id
         },
-        "orderAttributions": b[i].orderAttributions
+        "orderAttributions": newOrderAttributions_b
       };
     }
 
     $scope.dataToPrint = dataToPrint;
     $scope.dataNotToPrint = dataNotToPrint;
+    if($scope.dataToPrint == []) {
+      $scope.dataToPrint = null;
+    }
+    if($scope.dataNotToPrint == []){
+      $scope.dataNotToPrint = null;
+    }
+    console.log(angular.toJson(dataToPrint));
+    console.log(angular.toJson(dataNotToPrint));
     var confirmPopup = $ionicPopup.confirm({
       title: 'Modifier commandes',
       template: 'appliquer les modifications ?',
@@ -383,9 +423,13 @@ angular.module('starter.controllers')
           POST.url = baseUrl + 'orders/' + $scope.turnoverId + '/true';
           POST.data = $scope.dataToPrint;
           $http(POST).success(function(data) {
-            $scope.modal.hide();
             $helpers.loadingHide();
-            $helpers.redirectAlertHelper('modification succée', '/tabs/orderHistory');
+            if(!data.model){
+              $helpers.alertHelper('Print error!');
+            }else{
+              $scope.modal.hide();
+              $helpers.redirectAlertHelper('modification succée', '/tabs/orderHistory');
+            }
           })
         } else if ($scope.dataNotToPrint != false && $scope.dataToPrint == false) {
           POST.url = baseUrl + 'orders/' + $scope.turnoverId + '/false';
@@ -399,13 +443,18 @@ angular.module('starter.controllers')
           POST.url = baseUrl + 'orders/' + $scope.turnoverId + '/true';
           POST.data = $scope.dataToPrint;
           $http(POST).success(function(data) {
-            POST.url = baseUrl + 'orders/' + $scope.turnoverId + '/false';
-            POST.data = $scope.dataNotToPrint;
-            $http(POST).success(function(data) {
-              $scope.modal.hide();
+            if(!data.model){
               $helpers.loadingHide();
-              $helpers.redirectAlertHelper('modification succée', '/tabs/orderHistory');
-            })
+              $helpers.alertHelper('Print error!');
+            }else{
+              POST.url = baseUrl + 'orders/' + $scope.turnoverId + '/false';
+              POST.data = $scope.dataNotToPrint;
+              $http(POST).success(function(data) {
+                $scope.modal.hide();
+                $helpers.loadingHide();
+                $helpers.redirectAlertHelper('modification succée', '/tabs/orderHistory');
+              })
+            }
           })
         }
       }
@@ -413,7 +462,7 @@ angular.module('starter.controllers')
 
   }
 
-  $scope.sendOrders = function() {}
+//  $scope.sendOrders = function() {}
 
   $ionicModal.fromTemplateUrl('templates/modalTpls/orderHistoryEdit.html', {
     scope: $scope,
@@ -495,7 +544,6 @@ $scope.subtractCount = function(index) {
   function(newValue, oldValue) {
     $localStorage.set('cartData-' + $scope.selectedTableId, angular.toJson(newValue));
   });
-  console.log($localStorage.get('cartData-' + $scope.selectedTableId));
 
 }
 
@@ -514,7 +562,6 @@ $scope.sendOrders = function() {
         };
       }
       $scope.ordersData = angular.toJson(ordersData);
-      console.log($scope.ordersData);
       var confirmPopup = $ionicPopup.confirm({
         title: "soumettre",
         template: "Envoyer à la cuisine ?"
@@ -526,10 +573,16 @@ $scope.sendOrders = function() {
           POST.data = ordersData;
           $http(POST).success(function(data) {
             $helpers.loadingHide();
-            cartData = [];
-            window.localStorage.setItem('cartData-' + $scope.selectedTableId, cartData);
-            $helpers.refreshHelper();
-            $helpers.redirectAlertHelper('Envoyé succée', '/tabs/orderHistory');
+            if(!data.model){
+              $helpers.alertHelper('Print error!');
+            }else{
+              cartData = [];
+              window.localStorage.setItem('cartData-' + $scope.selectedTableId, cartData);
+              $helpers.refreshHelper();
+              $helpers.redirectAlertHelper('Envoyé succée', '/tabs/orderHistory');
+
+            }
+
           })
         } else {
 

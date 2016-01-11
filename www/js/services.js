@@ -53,6 +53,16 @@ var POST = {
 };
 angular.extend(POST, REQ);
 
+var DELETE = {
+	method : 'DELETE'
+};
+angular.extend(DELETE, REQ);
+
+var PUT = {
+	method : 'PUT'
+};
+angular.extend(PUT, REQ);
+
 function convertImageURL(thumb) {
 	thumb = thumb ? thumb : defaultThumb;
 	return productRootUrl + thumb;

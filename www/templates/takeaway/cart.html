@@ -20,13 +20,18 @@
 
 
         <img ng-src="{{ item.productInfo.thumb }}">
-        <h3>{{ item.productInfo.productName }} <small ng-show = "item.orderAttributions">({{item.productInfo.attrName}})</small></h3>
+        <h3>{{ item.productInfo.productName }}</h3>
         <h4 class="assertive">{{item.productInfo.categoryName}}</h4>
-      
+
         <span class="badge badge-assertive">{{item.count}}</span>
         <p ng-hide = "item.orderAttributions"><b>Prix : {{item.productInfo.productPrice/100 | currency:'€ '}}</b></p>
         <p ng-show = "item.orderAttributions"><b>Prix : {{(item.productInfo.productPrice+item.productInfo.attrPrice)/100 | currency:'€ '}}</b></p>
+         <div ng-if = "item.orderAttributions" class="padding-top padding-bottom"><h4><small class="assertive">options:</small></h4>
+              <div class="" ng-repeat = " a in item.orderAttributions">
+                <small>{{a.attribution.attributionName}}</small> <small ng-if="a.attribution.attributionPrice >0">{{a.attribution.attributionPrice/100 | currency: "€ "}}</small>
+              </div>
 
+         </div>
         <div class=" ">
           <button class="button icon ion-ios-minus" ng-click="subtractCount({{index}})"></button>
           <div class="productCount" id="productCount{{product.id}}">
