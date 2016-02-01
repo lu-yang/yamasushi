@@ -261,6 +261,37 @@ angular.module('starter.controllers')
       $state.go('app.takeawayOrderHistoryEdit');
     }
 
+    $scope.sendToPrint = function(){
+      var grp = [];
+      for (var i = 0; i < $scope.orders.length; i++) {
+        if($scope.orders[i].printed == false){
+          grp.push({"id":$scope.orders[i].id});
+        }
+      }
+      $scope.printList = grp;
+      if($scope.printList.length>0){
+        $scope.doSend();
+      }
+    }
+
+    $scope.doSend = function() {
+      $helpers.loadingShow();
+      POST.url = baseUrl + 'printKitchenOrders';
+      POST.data = angular.toJson($scope.printList);
+      $http(POST).success(function(data) {
+        $helpers.loadingHide();
+        if(!data.model){
+          alert('Print error!');
+        }else{
+
+          $state.go($state.current, {}, {reload: true});
+        }
+      }).error(function(data){
+        $helpers.loadingHide();
+        alert(data);
+      })
+    }
+
   })
   .controller('takeawayOrderHistoryEditCtrl', function($scope, $http, $stateParams, $localStorage, $helpers, $ionicModal, $filter, $orderHelpers, $ionicPopup) {
     $scope.turnoverId = $localStorage.get('turnoverId');
@@ -794,7 +825,7 @@ $scope.sendOrders = function() {
       confirmPopup.then(function(res) {
         if (res) {
           $helpers.loadingShow();
-          POST.url = baseUrl + 'orders/' + $scope.turnoverId + '/true';
+          POST.url = baseUrl + 'orders/' + $scope.turnoverId + '/false';
           POST.data = ordersData;
           $http(POST).success(function(data) {
             $helpers.loadingHide();
