@@ -37,14 +37,14 @@
     <div class="col">{{payment.alcool_total_paid | number:2}} €</div>
   </div>
   <hr>
-  <button class="button button-block button-dark" ng-click="printReceiptActionSheet()">
+  <button class="button button-block" ng-click="printReceiptActionSheet()">
     <i class="ion ion-printer"></i> Imprimer un reçu
   </button>
   <hr>
-  <button class="button button-block button-dark" ng-click="checkoutActionSheet(0)">
+  <button class="button button-block" ng-click="checkoutActionSheet(0)">
     <i class="ion ion-cash"></i> Paiement (Cash)
   </button>
-  <button class="button button-block button-dark" ng-click="checkoutActionSheet(1)">
+  <button class="button button-block" ng-click="checkoutActionSheet(1)">
     <i class="ion ion-card"></i> Paiement (Carte)
   </button>
 </ion-content>

@@ -16,9 +16,8 @@ angular.module('starter.controllers')
 	}
 	$scope.checkTurnoverHealth = function(turnoverId){
 		$turnover.getTurnoverById(turnoverId).then(function(data){
-
-			if(data.model.turnover.checkout != false){
-				$helpers.redirectAlertHelper('当前桌号已被清台','/tableList');
+			if(!data.model.turnover || data.model.turnover.checkout != false){
+				$helpers.redirectAlertHelper('Cette table a été cloturé','/tableList');
 			}
 			//
 

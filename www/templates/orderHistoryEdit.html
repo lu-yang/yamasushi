@@ -4,8 +4,8 @@
     <a href="#/app/tabs/orderHistory" class="button button-light "><i class="ion ion-arrow-left-c"></i> Annuler</a>
   </ion-nav-buttons>
   <ion-nav-buttons side="right">
-  <button class="button  button-assertive " ng-click="openModal()"><i class="ion-checkmark"></i> Modifier</button>
-  </ion-nav-buttons>
+  <button class="button  button-assertive " ng-click="changeOrders()"><i class="ion-checkmark"></i> Modifier</button>
+  </ion-nav-buttons> 
 
   <ion-content>
 
@@ -18,17 +18,16 @@
 
 
         <img ng-src="{{ item.product.thumb }}">
-        <small><i class="ion-ios-clock-outline"></i> {{item.created|date :'H:mm'}}</small>
         <h3>{{ item.product.productName }} <span class="balanced" ng-show="item.status ==0"><i class="ion ion-checkmark-circled"></i> terminé</span></h3>
         <h4 class="assertive">{{item.category.name}} </h4>
-        <div ng-if = "item.orderAttributions" class="padding-top padding-bottom"><h4><small class="assertive">options:</small></h4>
+        <div ng-if = "item.orderAttributions">
              <div class="" ng-repeat = " a in item.orderAttributions">
-               <small>{{a.attribution.attributionName}}</small> <small ng-if="a.attribution.attributionPrice >0">{{a.attribution.attributionPrice/100 | currency: "€ "}}</small>
+               <small>{{a.attribution.attributionName}}</small>
              </div>
 
         </div>
-        <div class=" ">
-            <span class="badge badge-assertive" >{{newCount[index]-item.count | numberExpress}}</span>
+        <div class="cartCount">
+            <span class="badge" >{{newCount[index]-item.count | numberExpress}}</span>
 
           <button class="button icon ion-ios-minus " ng-click="subtractCount({{index}})"></button>
           <div class="productCount" id="productCount{{product.id}}">

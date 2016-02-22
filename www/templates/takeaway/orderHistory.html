@@ -1,4 +1,4 @@
-<ion-view view-title="Historique">
+<ion-view view-title="Emporter">
   <ion-nav-buttons side="right">
     <button class="button  ion-edit button-positive" ng-click="orderEdit()"> modifier</button>
     <button class="button  ion-printer button-default" ng-click="sendToPrint()"> Cuisine</button>
@@ -8,21 +8,19 @@
           <h5 class="padding">Il n'y a aucune commande...</h5>
             </div>
 <div ng-show="orders" class="list " style="width: 100%; height: 70%;  overflow: auto;">
-        <a href=""  ng-repeat="item in orders | orderBy:'-id'" class="item item-thumbnail-left">
+        <a href=""  ng-repeat="item in orders | orderBy:'-id'" class="item item-thumbnail-left" ng-class="{'item-energized':!item.printed}">
           <img ng-src="{{ item.product.thumb }}">
           <h3> {{ item.product.productName }}        <span class="assertive" ng-show="item.printed ==false"><i class="ion ion-printer"></i> à imprimer</span>   <span class="balanced" ng-show="item.status ==0"><i class="ion ion-checkmark-circled"></i> terminé</span></h3>
           <h4 class="assertive">{{item.category.name}}</h4>
           <span class="badge badge-assertive">{{item.count}}</span>
-          <p ng-hide = "item.orderAttributions"><b>Prix : {{item.product.productPrice/100 | currency:'€ '}}</b></p>
-          <p ng-show = "item.orderAttributions"><b>Prix : {{(item.product.productPrice+item.orderAttributions[0].attribution.attributionPrice)/100 | currency:'€ '}}</b></p>
-          <div ng-if = "item.orderAttributions" class="padding-top padding-bottom"><h4><small class="assertive">options:</small></h4>
+          <p ng-if = "!item.orderAttributions"><b>Prix : {{item.product.productPrice/100 | currency:'€ '}}</b></p>
+          <p ng-if = "item.orderAttributions"><b>Prix : {{(item.product.productPrice+item.orderAttributions[0].attribution.attributionPrice)/100 | currency:'€ '}}</b></p>
+          <div ng-if = "item.orderAttributions" >
                <div class="" ng-repeat = " a in item.orderAttributions">
-                 <small>{{a.count}} x {{a.attribution.attributionName}}</small> <small ng-if="a.attribution.attributionPrice >0">{{a.attribution.attributionPrice/100 | currency: "€ "}}</small>
+                 <small>{{a.attribution.attributionName}}</small>
                </div>
 
           </div>
-          <p ng-hide="item.updated==fasle"><small><i class="ion-ios-clock-outline"></i> {{item.updated | date:'d-MMM-y H:mm'}}</small></p>
-          <p ng-show="item.updated==fasle"><small><i class="ion-ios-clock-outline"></i> {{item.created | date:'d-MMM-y H:mm'}}</small></p>
         </a>
         </div>
   </ion-content>

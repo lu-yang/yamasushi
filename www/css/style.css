@@ -38,13 +38,18 @@
 
   .productCount{  display: inline;}
   .productCount input{
-    width: 70px;
-    font-size: 25px;
+    margin-top: 10px;
+    font-weight: bold;
+    background-color: #ef473a;
+    color: #FFF;
+    width: 30px;
+    font-size: 15px;
     text-align: center;
-    height: 47px;
-    border: 1px solid #aaa;
+    height: 25px;
+    border: none;
     display: inline;
-    box-shadow:none;
+    box-shadow: none;
+    border-radius: 15px;
   }
 
   /*attribution-item-divider*/
@@ -57,45 +62,88 @@
 
   /* android customer button */
   .platform-android .action-sheet-backdrop.active {
-    background-color: rgba(0, 0, 0, 0.2); }
-    .platform-android .action-sheet {
-      margin: 0; }
-      .platform-android .action-sheet .action-sheet-title, .platform-android .action-sheet .button {
-        text-align: left;
-        border-color: transparent;
-        font-size: 16px;
-        color: inherit; }
-        .platform-android .action-sheet .action-sheet-title {
-          font-size: 14px;
-          padding: 16px;
-          color: #666; }
-          .platform-android .action-sheet .button.active, .platform-android .action-sheet .button.activated {
-            background: #e8e8e8; }
-            .platform-android .action-sheet-group {
-              margin: 0;
-              border-radius: 0;
-              background-color: #fafafa; }
-              .platform-android .action-sheet-cancel {
-                display: none; }
-                .platform-android .action-sheet-has-icons .button {
-                  padding-left: 56px; }
+    background-color: rgba(0, 0, 0, 0.2);
+  }
+  .platform-android .action-sheet {
+    margin: 0;
+  }
+  .platform-android .action-sheet .action-sheet-title, .platform-android .action-sheet .button {
+    text-align: left;
+    border-color: transparent;
+    font-size: 16px;
+    color: inherit;
+  }
+  .platform-android .action-sheet .action-sheet-title {
+    font-size: 14px;
+    padding: 16px;
+    color: #666;
+  }
+  .platform-android .action-sheet .button.active, .platform-android .action-sheet .button.activated {
+    background: #e8e8e8;
+  }
+  .platform-android .action-sheet-group {
+    margin: 0;
+    border-radius: 0;
+    background-color: #fafafa;
+  }
+  .platform-android .action-sheet-cancel {
+    display: none;
+  }
+  .platform-android .action-sheet-has-icons .button {
+    padding-left: 56px;
+  }
 
-                  .item h2{font-size: 23px;}
+  .item h2{
+    font-size: 23px;
+  }
 
-                  .mymodal .closeBtn {
+  .mymodal .closeBtn {
 
-                    position: absolute;
-                    top: 0;
-                    right: 0;
-                  }
+    position: absolute;
+    top: 0;
+    right: 0;
+  }
 
-                  @media (min-width: 680px) {
-                    .mymodal {
-                      width: 90%;
-                      height: 90%;
-                      top: 5%;
-                      left: 5%;
-                      right: 5%;
-                      bottom: 5%;
-                    }
-                  }
+  @media (min-width: 680px) {
+    .mymodal {
+      width: 90%;
+      height: 90%;
+      top: 5%;
+      left: 5%;
+      right: 5%;
+      bottom: 5%;
+    }
+  }
+
+  .item-thumbnail-left, .item-thumbnail-left .item-content{
+    min-height: 75px;
+    padding-left: 73px;
+  }
+  .item-thumbnail-left > img:first-child, .item-thumbnail-left .item-image, .item-thumbnail-left .item-content > img:first-child, .item-thumbnail-left .item-content .item-image{
+    max-width: 50px;
+    max-height: 50px;
+  }
+.categoryList h2, .productList h2{
+  font-size: 18px;
+  margin-top: 18px;
+  text-align: center;
+}
+
+.cartCount{
+  position: absolute;
+  float:right;
+  top:10px;
+  right:10px;
+}
+.cartCount .badge{
+  right: 55px;
+    top: 40px;
+}
+.button{
+  border:none;
+  background-color: #D4D4D4;
+}
+
+.platform-android .bar .title{
+  font-size: 15px;
+}

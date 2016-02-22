@@ -1,23 +1,16 @@
 <ion-modal-view class="mymodal">
   <ion-header-bar>
-    <h1 class="title">{{product.productName}}</h1>
+
     <button class="button  button-dark closeBtn" ng-click="closeModal()"><i class="icon ion-close-circled"></i></button>
   </ion-header-bar>
   <ion-content>
     <div class="card">
 
       <div class="item item-thumbnail-left text-center">
-        <img src="{{product.thumb}}"  >
+        <img ng-src="{{product.thumb}}"  >
+        <h2 class="padding-left"><span class="pull-left">{{product.productName}}</span></h2>
         <h3 class="padding-left"><span class="pull-left">Prix: {{product.productPrice/100 | currency:'€ '}}</span></h3>
-        <h3 class="padding-left"><span class="pull-left">Description:</span></h3>
-        <div class="padding-left pull-left">
-          <p ng-hide="{{product.description}}">
-            Rien...
-          </p>
-          <p ng-show="{{product.description}}">
-            {{product.description}}
-          </p>
-        </div>
+
       </div>
 
       <!-- <form name="myForm" ng-submit="onSubmit()"> -->

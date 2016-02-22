@@ -9,14 +9,14 @@
 
   </label>
   <ion-content>
-    <div class="list " style="width: 100%; height: 70%;  overflow: auto;" ng-show = "viewType.checked == false">
-      <a  href="#/app/takeaways/product/{{item.id}}/{{item.name}}" ng-repeat="item in category" class="item item-thumbnail-left">
+    <div class="list " style="width: 100%; height: 70%;  overflow: auto;" ng-if = "viewType.checked == false">
+      <a  href="#/app/takeaways/product/{{item.id}}/{{item.name}}" ng-repeat="item in category" class="item item-thumbnail-left categoryList">
         <img ng-src="{{ item.thumb }}">
         <h2> {{ item.name }}</h2>
       </a>
     </div>
 
-    <div ng-repeat="item in category" ng-show = "viewType.checked == true">
+    <div ng-repeat="item in category" ng-if = "viewType.checked == true">
         <div class="row" ng-if="$even">
           <div class="col col-50 " >
             <div class="list card ">

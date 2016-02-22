@@ -14,9 +14,9 @@
   <div class="card" ng-repeat="(index,item) in takeawayList " ng-show = "takeawayList"  ng-click ="checkTableActionSheet(item.takeaway.turnover.id,item.takeaway.id) ">
     <div class="item item-divider item-light">
       <div class="pull-left">
-        <span ng-if="item.takeaway.source == 1"><i class="ion ion-earth"></i></span>
-        <span ng-if="item.takeaway.source == 2"><i class="ion ion-ios-telephone"></i></span>
-        <span ng-if="item.takeaway.source == 3"><i class="ion ion-android-restaurant"></i></span>
+        <span ng-if="item.takeaway.source == 1"><i class="ion ion-earth"></i> par internet</span>
+        <span ng-if="item.takeaway.source == 2"><i class="ion ion-ios-telephone"></i> par téléphone</span>
+        <span ng-if="item.takeaway.source == 3"><i class="ion ion-android-restaurant"></i> sur place</span>
       </div>
 
       <div class="pull-right">
@@ -29,10 +29,9 @@
       </div>
     </div>
     <div class="item item-text-wrap">
-
       <div class="pull-left">
-        <h2 ng-if="item.takeaway.delivery == false"><i class="ion ion-bag"></i> Emporter </h2>
-        <h2 ng-if="item.takeaway.delivery == true"><i class="ion ion-ios-home"></i>  Livraison </h2>
+        <h2 ng-if="item.takeaway.delivery == false">{{item.takeaway.id}}. Emporter <i class="ion ion-bag"></i></h2>
+        <h2 ng-if="item.takeaway.delivery == true">{{item.takeaway.id}}. Livraison <i class="ion ion-ios-home"></i></h2>
       </div>
       <div class="pull-right">
         <h2 ng-if="item.takeaway.delivery == false">{{item.takeaway.deliveryTimestamp | date:"HH:mm"}}</h2>

@@ -11,9 +11,10 @@ angular.module('starter.controllers')
 
   GET.url = baseUrl + 'takeaways/'+ $scope.yesterday +'/' + $scope.tomorrow;
   $http(GET).success(function(data) {
+    console.log(data);
     if (!data.model || data.model.length == 0) {
       $helpers.loadingHide();
-      $helpers.alertHelper("non emporter");
+      // $helpers.alertHelper("non emporter");
       return;
     }
     var list = data.model;
@@ -26,17 +27,18 @@ angular.module('starter.controllers')
 
   $scope.doRefresh = function(){
 
-    GET.url = baseUrl + 'takeaways/' + $scope.today +'/' + $scope.tomorrow;;
+    GET.url = baseUrl + 'takeaways/' + $scope.yesterday +'/' + $scope.tomorrow;;
     $http(GET).success(function(data) {
+      $scope.$broadcast('scroll.refreshComplete');
+      $helpers.loadingHide();
       if (!data.model || data.model.length == 0) {
-        $helpers.loadingHide();
-        $helpers.alertHelper("non emporter");
+      //  $helpers.alertHelper("non emporter");
         return;
       }
       var list = data.model;
       $scope.takeawayList =  $filter('orderBy')(list,'takeaway.deliveryTimestamp');
       // Stop the ion-refresher from spinning
-      $scope.$broadcast('scroll.refreshComplete');
+
     }).error(function(data) {
       alert(data);
     });
@@ -45,29 +47,13 @@ angular.module('starter.controllers')
 
   // 查看已开桌
   $scope.checkTableActionSheet = function(turnoverId,takeawayId){
-    // Show the action sheet
-    var hideSheet = $ionicActionSheet.show({
-      buttons: [
-        { text: '<b> <i class="ion-eye"></i>  Voir les détailles' }
-      ],
-      //destructiveText: "L'addition",
-      titleText: "Qu'est ce que vous voulez faire ... ?",
-      cancelText: 'Annuler',
-      cancel: function() {
-        // add cancel code..
-        hideSheet();
-      },
-      buttonClicked: function(index) {
-        if(index == 0) {
-          $localStorage.set('turnoverId', turnoverId);
-          $localStorage.set('takeawayId',takeawayId);
-          $localStorage.set('selectedTableId', 0);
-          $window.location.href = '#/app/takeaways/orderHistory';
-          $window.location.reload();
-        }
-        return true;
-      }
-    });
+    $localStorage.set('turnoverId', turnoverId);
+    $localStorage.set('takeawayId',takeawayId);
+    $localStorage.set('selectedTableId', 0);
+
+    $window.location.href = '#/app/takeaways/orderHistory';
+
+
   };
 
   // 创建新外卖
@@ -101,7 +87,6 @@ angular.module('starter.controllers')
       "delivery":$delivery,
       "deliveryTimestamp":$time
     }
-    console.log(takeawayData);
 
     POST.url = baseUrl + 'takeaway';
     POST.data = takeawayData;
@@ -335,11 +320,9 @@ angular.module('starter.controllers')
         $scope.newCount[i] = $scope.newCount[i] - 1;
       }
     }
-
     $scope.changeOrders = function() {
       data = [];
-      dataToPrint = [];
-      dataNotToPrint = [];
+      dataToModify = [];
       for (var i = 0; i < $scope.orders.length; i++) {
         data[i] = {
           id: $scope.orders[i].id,
@@ -348,16 +331,11 @@ angular.module('starter.controllers')
       }
 
       a = $filter('filter')($scope.orders, function(d, i) {
-        if ($scope.newCount[i] - $scope.orders[i].count != 0 && $scope.checkboxModel[i] == true) {
+        if ($scope.newCount[i] - $scope.orders[i].count != 0 ) {
           return d;
         }
       });
 
-      b = $filter('filter')($scope.orders, function(d, i) {
-        if ($scope.newCount[i] - $scope.orders[i].count != 0 && $scope.checkboxModel[i] == false) {
-          return d;
-        }
-      });
       for (var i = 0; i < a.length; i++) {
         newCount = $filter('filter')(data, function(d) {
           if (d.id == a[i].id) {
@@ -370,7 +348,7 @@ angular.module('starter.controllers')
           for (var j = 0; j < a[i].orderAttributions.length; j++) {
             newOrderAttributions_a[j] = {
               attribution :   a[i].orderAttributions[j].attribution,
-              count :  newCount[0].newCount,
+              count : newCount[0].newCount,
               id : a[i].orderAttributions[j].id,
               orderId :a[i].orderAttributions[j].orderId
             }
@@ -378,110 +356,39 @@ angular.module('starter.controllers')
         }else{
           newOrderAttributions_a = null;
         }
-        dataToPrint[i] = {
+        dataToModify[i] = {
           "id": a[i].id,
           "count": newCount[0].newCount,
           "product": {
             "id": a[i].product.id,
             "categoryId": a[i].category.id
           },
-          "orderAttributions": newOrderAttributions_a
+          "orderAttributions": newOrderAttributions_a,
+          "printed":true
         };
       }
 
-      for (var i = 0; i < b.length; i++) {
-        newCount = $filter('filter')(data, function(d) {
-          if (d.id == b[i].id) {
-            return d;
-          }
-        });
 
-        newOrderAttributions_b = [];
-        if(b[i].orderAttributions){
-          for (var j = 0; j < b[i].orderAttributions.length; j++) {
-            newOrderAttributions_b[j] = {
-              attribution :   b[i].orderAttributions[j].attribution,
-              count : newCount[0].newCount,
-              id : b[i].orderAttributions[j].id,
-              orderId :b[i].orderAttributions[j].orderId
-            }
-          }
-        }else{
-          newOrderAttributions_b = null;
-        }
-        dataNotToPrint[i] = {
-          "id": b[i].id,
-          "count": newCount[0].newCount,
-          "product": {
-            "id": b[i].product.id,
-            "categoryId": b[i].category.id
-          },
-          "orderAttributions": newOrderAttributions_b
-        };
+
+      $scope.dataToModify = dataToModify;
+      if($scope.dataToModify == []) {
+        $scope.dataToModify = null;
       }
-
-      $scope.dataToPrint = dataToPrint;
-      $scope.dataNotToPrint = dataNotToPrint;
-
-      if($scope.dataToPrint == []) {
-        $scope.dataToPrint = null;
+    //  console.log(angular.toJson(dataToModify));
+      if ($scope.dataToModify != false ) {
+        $helpers.loadingShow();
+        POST.url = baseUrl + 'orders/' + $scope.turnoverId + '/false';
+        POST.data = $scope.dataToModify;
+        $http(POST).success(function(data) {
+          $helpers.loadingHide();
+          $helpers.redirectAlertHelper('modification succée', '/tabs/orderHistory');
+        })
+      }else{
+        $helpers.alertHelper("Rien à changer");
       }
-      if($scope.dataNotToPrint == []){
-        $scope.dataNotToPrint = null;
-      }
-
-      var confirmPopup = $ionicPopup.confirm({
-        title: 'Modifier commandes',
-        template: 'appliquer les modifications ?',
-        cancelText: '<i class="ion-close-circled"></i> non',
-        okText: '<i class="ion-checkmark-circled"></i> oui',
-        okType: 'button-assertive'
-      });
-      confirmPopup.then(function(res) {
-        if (res) {
-          $helpers.loadingShow();
-          if ($scope.dataToPrint != false && $scope.dataNotToPrint == false) {
-            POST.url = baseUrl + 'orders/' + $scope.turnoverId + '/true';
-            POST.data = $scope.dataToPrint;
-            $http(POST).success(function(data) {
-              $helpers.loadingHide();
-              if(!data.model){
-                $helpers.alertHelper('Print error!');
-              }else{
-                $scope.modal.hide();
-                $helpers.redirectAlertHelper('modification succée', '/takeaways/orderHistory');
-              }
-            })
-          } else if ($scope.dataNotToPrint != false && $scope.dataToPrint == false) {
-            POST.url = baseUrl + 'orders/' + $scope.turnoverId + '/false';
-            POST.data = $scope.dataNotToPrint;
-            $http(POST).success(function(data) {
-              $scope.modal.hide();
-              $helpers.loadingHide();
-              $helpers.redirectAlertHelper('modification succée', '/takeaways/orderHistory');
-            })
-          } else if ($scope.dataNotToPrint != false && $scope.dataToPrint != false) {
-            POST.url = baseUrl + 'orders/' + $scope.turnoverId + '/true';
-            POST.data = $scope.dataToPrint;
-            $http(POST).success(function(data) {
-              if(!data.model){
-                $helpers.loadingHide();
-                $helpers.alertHelper('Print error!');
-              }else{
-                POST.url = baseUrl + 'orders/' + $scope.turnoverId + '/false';
-                POST.data = $scope.dataNotToPrint;
-                $http(POST).success(function(data) {
-                  $scope.modal.hide();
-                  $helpers.loadingHide();
-                  $helpers.redirectAlertHelper('modification succée', '/takeaways/orderHistory');
-                })
-              }
-            })
-          }
-        }
-      });
 
     }
+  
 
     $scope.sendOrders = function() {}
 
@@ -605,7 +512,7 @@ angular.module('starter.controllers')
     $scope.openModal = function(index) {
       $scope.modal.show();
       $scope.product = $scope.productList[index]
-      $scope.currentCount = 0;
+      $scope.currentCount = 1;
       if ($scope.product.attributionGroups) {
         attrValue = [];
         checkValue = [];
@@ -679,8 +586,8 @@ angular.module('starter.controllers')
     }
 
     $scope.subtractCount = function() {
-      if ($scope.currentCount == 0) {
-        $scope.currentCount = 0;
+      if ($scope.currentCount == 1) {
+        $scope.currentCount = 1;
       } else {
         $scope.currentCount = $scope.currentCount - 1;
       }
@@ -746,11 +653,12 @@ angular.module('starter.controllers')
 
 
       $localStorage.set('cartData-' + $scope.selectedTableId, angular.toJson($scope.cart));
-      $scope.currentCount = 0;
+      $scope.currentCount = 1;
       // $scope.attrValue = null;
       $scope.checkValue = null;
       $scope.cartData = $localStorage.get('cartData-' + $scope.selectedTableId);
-      $helpers.alertHelper('reussit');
+    //  $helpers.alertHelper('reussit');
+      $scope.closeModal();
 
     }
 
@@ -820,7 +728,7 @@ $scope.sendOrders = function() {
       $scope.ordersData = angular.toJson(ordersData);
       var confirmPopup = $ionicPopup.confirm({
         title: "soumettre",
-        template: "Envoyer à la cuisine ?"
+        template: "Enregistrer la commande ?"
       });
       confirmPopup.then(function(res) {
         if (res) {
